@@ -1,5 +1,6 @@
 package fr.eni.clinique.dal;
 
+import fr.eni.clinique.dal.jdbc.ClientDAOJdbcImpl;
 import fr.eni.reservation.dal.jdbc.PersonnelDAOJdbcImpl;
 /**
  * 

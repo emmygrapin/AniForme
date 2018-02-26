@@ -1,10 +1,14 @@
 package fr.eni.clinique.bo;
 
 import java.util.ArrayList;
-
+/**
+ * 
+ * @author alemercier2017
+ *
+ */
 public class Clients {
 	
-	private String codeClient;
+	private int codeClient;
 	private String nomClient;
 	private String prenomClient;
 	private String adresse1;
@@ -19,7 +23,7 @@ public class Clients {
 	private ArrayList<Animaux> animaux;
 	
 	
-	public Clients(String codeClient, String nomClient, String prenomClient, String adresse1, String adresse2,
+	public Clients(int codeClient, String nomClient, String prenomClient, String adresse1, String adresse2,
 			String codePostal, String ville, String numeroTel, String assurance, String email, String remarque,
 			Boolean archive, ArrayList<fr.eni.clinique.bo.Animaux> animaux) {
 		this.codeClient = codeClient;
@@ -37,7 +41,7 @@ public class Clients {
 		this.animaux = animaux;
 	}
 
-	public Clients(String codeClient, String nomClient, String prenomClient, String adresse1, String adresse2,
+	public Clients(int codeClient, String nomClient, String prenomClient, String adresse1, String adresse2,
 			String codePostal, String ville, String numeroTel, String assurance, String email, String remarque,
 			Boolean archive) {
 		this.codeClient = codeClient;
@@ -63,11 +67,11 @@ public class Clients {
 		this.animaux = animaux;
 	}
 
-	public String getCodeClient() {
+	public int getCodeClient() {
 		return codeClient;
 	}
 	
-	public void setCodeClient(String codeClient) {
+	public void setCodeClient(int codeClient) {
 		this.codeClient = codeClient;
 	}
 	
@@ -157,6 +161,15 @@ public class Clients {
 	public void setArchive(Boolean archive) {
 		this.archive = archive;
 	}
+
+	@Override
+	public String toString() {
+		return "Clients [codeClient=" + codeClient + ", nomClient=" + nomClient + ", prenomClient=" + prenomClient
+				+ ", adresse1=" + adresse1 + ", adresse2=" + adresse2 + ", codePostal=" + codePostal + ", ville="
+				+ ville + ", numeroTel=" + numeroTel + ", assurance=" + assurance + ", email=" + email + ", remarque="
+				+ remarque + ", archive=" + archive + ", animaux=" + animaux + "]";
+	}
+	
 	
 	
 
