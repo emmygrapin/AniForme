@@ -5,12 +5,12 @@ import java.util.Date;
 public class Agendas {
 	
 	private Personnels codeVeto;
-	private Animaux codeAnimal;
+	private Animaux animal;
 	private Date dateRdv;
 	public Agendas(Personnels codeVeto, Animaux codeAnimal, Date dateRdv) {
 		super();
 		this.codeVeto = codeVeto;
-		this.codeAnimal = codeAnimal;
+		this.animal = codeAnimal;
 		this.dateRdv = dateRdv;
 	}
 	public Personnels getCodeVeto() {
@@ -20,10 +20,10 @@ public class Agendas {
 		this.codeVeto = codeVeto;
 	}
 	public Animaux getCodeAnimal() {
-		return codeAnimal;
+		return animal;
 	}
 	public void setCodeAnimal(Animaux codeAnimal) {
-		this.codeAnimal = codeAnimal;
+		this.animal = codeAnimal;
 	}
 	public Date getDateRdv() {
 		return dateRdv;

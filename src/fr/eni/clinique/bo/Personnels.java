@@ -16,7 +16,6 @@ public class Personnels {
 	private boolean archive;
 	
 	public Personnels(int codePerso, String nom, String motDePasse, String role, boolean archive) {
-		super();
 		this.codePerso = codePerso;
 		this.nom = nom;
 		this.motDePasse = motDePasse;
