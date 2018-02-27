@@ -1,5 +1,10 @@
 package fr.eni.clinique.bo;
 
+/**
+ * 
+ * @author mdeoliveira2017
+ *
+ */
 public class Race {
 
 	private String race;

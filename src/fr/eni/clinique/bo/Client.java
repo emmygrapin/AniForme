@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * @author alemercier2017
  *
  */
-public class Clients {
+public class Client {
 	
 	private int codeClient;
 	private String nomClient;
@@ -23,7 +23,7 @@ public class Clients {
 	private ArrayList<Animaux> animaux;
 	
 	
-	public Clients(int codeClient, String nomClient, String prenomClient, String adresse1, String adresse2,
+	public Client(int codeClient, String nomClient, String prenomClient, String adresse1, String adresse2,
 			String codePostal, String ville, String numeroTel, String assurance, String email, String remarque,
 			Boolean archive, ArrayList<fr.eni.clinique.bo.Animaux> animaux) {
 		this.codeClient = codeClient;
@@ -41,7 +41,7 @@ public class Clients {
 		this.animaux = animaux;
 	}
 
-	public Clients(int codeClient, String nomClient, String prenomClient, String adresse1, String adresse2,
+	public Client(int codeClient, String nomClient, String prenomClient, String adresse1, String adresse2,
 			String codePostal, String ville, String numeroTel, String assurance, String email, String remarque,
 			Boolean archive) {
 		this.codeClient = codeClient;

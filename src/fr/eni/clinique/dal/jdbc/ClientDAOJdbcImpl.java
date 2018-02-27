@@ -9,7 +9,8 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.eni.clinique.bo.Clients ;
+import fr.eni.clinique.JdbcTools;
+import fr.eni.clinique.bo.Client;
 import fr.eni.clinique.dal.ClientDAO;
 import fr.eni.clinique.dal.DALException;
 
@@ -27,7 +28,7 @@ public class ClientDAOJdbcImpl implements ClientDAO {
 			+ " from Clients";
 	private static final String sqlInsert = "insert into Clients(NomClient, PrenomClient, Adresse1, Adresse2, CodePostal, Ville, NumTel, Assurance, Email, Remarque, Archive) values(?,?,?,?,?,?,?,?,?,?,?)";
 	private static final String sqlDelete = "delete from Clients where CodeClient = ?";
-	private static final String sqlUpdate = "update Clients set CodeClient = ?, NomClient = ?, PrenomClient = ?, Adresse1 = ?, Adresse2 = ?, CodePostal = ?, Ville = ?, NumTel = ?, Assurance = ? , Email = ? , Remarque = ?, Archive = ?"
+	private static final String sqlUpdate = "update Clients set NomClient = ?, PrenomClient = ?, Adresse1 = ?, Adresse2 = ?, CodePostal = ?, Ville = ?, NumTel = ?, Assurance = ? , Email = ? , Remarque = ?, Archive = ?"
 			+ " where CodeClient = ?";
 	
 	private Connection connection;
@@ -57,11 +58,11 @@ public class ClientDAOJdbcImpl implements ClientDAO {
 	}
 	
 	@Override
-	public Clients selectById(int CodeClient) throws DALException {
+	public Client selectById(int CodeClient) throws DALException {
 		Connection cnx = null;
 		PreparedStatement rqt = null;
 		ResultSet rs = null;
-		Clients client = null;
+		Client client = null;
 		try {
 			cnx = getConnection();
 			rqt = cnx.prepareStatement(sqlSelectById);
@@ -69,7 +70,7 @@ public class ClientDAOJdbcImpl implements ClientDAO {
 			rs = rqt.executeQuery();
 			if (rs.next()) {
 			
-					client = new Clients(rs.getInt("CodeClient"), rs.getString("NomClient"), rs.getString("PrenomClient"),
+					client = new Client(rs.getInt("CodeClient"), rs.getString("NomClient"), rs.getString("PrenomClient"),
 							rs.getString("Adresse1"), rs.getString("Adresse2"), rs.getString("CodePostal"),rs.getString("Ville"), 
 							rs.getString("NumTel"), rs.getString("Assurance"), rs.getString("Email"), rs.getString("Remarque"), rs.getBoolean("Archive")
 							);
@@ -92,22 +93,21 @@ public class ClientDAOJdbcImpl implements ClientDAO {
 	}
 
 	@Override
-	public List<Clients> selectAll() throws DALException {
+	public List<Client> selectAll() throws DALException {
 		Connection cnx = null;
 		Statement rqt = null;
 		ResultSet rs = null;
-		List<Clients> clients = new ArrayList<Clients>();
+		List<Client> clients = new ArrayList<Client>();
 		try{
 			cnx = getConnection();
 			rqt = cnx.createStatement();
 			rs = rqt.executeQuery(sqlSelectAll);
-			Clients client = null;
+			Client client = null;
 			while (rs.next()){
-				new Clients(rs.getInt("CodeClient"), rs.getString("NomClient"), rs.getString("PrenomClient"),
+				client = new Client(rs.getInt("CodeClient"), rs.getString("NomClient"), rs.getString("PrenomClient"),
 						rs.getString("Adresse1"), rs.getString("Adresse2"), rs.getString("CodePostal"),rs.getString("Ville"), 
 						rs.getString("NumTel"), rs.getString("Assurance"), rs.getString("Email"), rs.getString("Remarque"), rs.getBoolean("Archive")
 						);
-				
 				clients.add(client);
 			}
 		}
@@ -128,7 +128,7 @@ public class ClientDAOJdbcImpl implements ClientDAO {
 	}
 
 	@Override
-	public void insert(Clients data) throws DALException {
+	public Client insert(Client data) throws DALException {
 		Connection cnx = null;
 		PreparedStatement rqt = null;
 		try {
@@ -163,12 +163,12 @@ public class ClientDAOJdbcImpl implements ClientDAO {
 				throw new DALException("close failed - ", e);
 			}
 			closeConnection();
-
 		}
+		return data;
 	}
 	
 	
-	public void update(Clients data) throws DALException {
+	public void update(Client data) throws DALException {
 		Connection cnx = null;
 		PreparedStatement rqt = null;
 		try {
@@ -186,15 +186,10 @@ public class ClientDAOJdbcImpl implements ClientDAO {
 			rqt.setString(10, data.getRemarque());
 			rqt.setBoolean(11, data.getArchive());
 			rqt.setInt(12, data.getCodeClient());
-			int nbRows = rqt.executeUpdate();
-			if (nbRows == 1) {
-				ResultSet rs = rqt.getGeneratedKeys();
-				if (rs.next()) {
-					data.setCodeClient(rs.getInt(1));
-				}
-			}
+		    rqt.executeUpdate();
+			
 		}catch(SQLException e){
-			throw new DALException("insert failed ", e);
+			throw new DALException("update failed ", e);
 		}finally {
 			try {
 				if (rqt != null) {
