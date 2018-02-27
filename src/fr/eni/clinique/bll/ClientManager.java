@@ -34,6 +34,10 @@ public class ClientManager {
 		return daoClient.selectById(idClient);
 	}
 	
+	public List<Client> getClientsByNom(String nom) throws DALException{
+		return daoClient.selectByNom(nom);
+	}
+	
 	public void addClient(Client client) throws DALException 
 	{
 		daoClient.insert(client);

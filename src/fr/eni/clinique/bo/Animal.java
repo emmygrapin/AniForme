@@ -11,12 +11,12 @@ public class Animal {
 	private String nomAnimal;
 	private String sexe;
 	private String couleur;
+	private Race race;
 
 	private Client client;
 	private String tatouage;
 	private String antecedents;
 	private boolean archive;
-	private Race race;
 
 	
 	public Animal() {
@@ -27,15 +27,15 @@ public class Animal {
 	public Animal(int codeAnimal, String nomAnimal, String sexe, String couleur, Race race,
 			Client client, String tatouage, String antecedents, boolean archive) {
 		super();
-		this.codeAnimal = codeAnimal;
-		this.nomAnimal = nomAnimal;
-		this.sexe = sexe;
-		this.couleur = couleur;
-		this.race = race;
-		this.client = client;
-		this.tatouage = tatouage;
-		this.antecedents = antecedents;
-		this.archive = archive;
+		setCodeAnimal(codeAnimal);
+		setNomAnimal(nomAnimal);
+		setSexe(sexe);
+		setCouleur(couleur);
+		setRace(race);
+		setClient(client);
+		setTatouage(tatouage);
+		setAntecedents(antecedents);
+		setArchive(archive);
 	}
 
 	public int getCodeAnimal() {
@@ -75,9 +75,11 @@ public class Animal {
 	}
 
 	public void setRace(Race race) {
-		this.race = race;
+		
+		
+			this.race = race;
+	
 	}
-
 
 	public Client getClient() {
 		return client;
@@ -110,6 +112,16 @@ public class Animal {
 	public void setArchive(boolean archive) {
 		this.archive = archive;
 	}
+
+
+	@Override
+	public String toString() {
+		return "Animal :\n\t[codeAnimal=" + codeAnimal + ", nomAnimal=" + nomAnimal + ", sexe=" + sexe + ", couleur="
+				+ couleur + ", race=" + race + ", client=" + client + ", tatouage=" + tatouage + ", antecedents=" + antecedents
+				+ ", archive=" + archive  + "]\n";
+	}
+	
+	
 	
 	
 	
