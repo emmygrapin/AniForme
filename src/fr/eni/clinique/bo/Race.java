@@ -12,8 +12,8 @@ public class Race {
 	
 	public Race(String race, String espece) {
 		super();
-		this.race = race;
-		this.espece = espece;
+		setRace(race);
+		setEspece(espece);
 	}
 
 	public String getRace() {

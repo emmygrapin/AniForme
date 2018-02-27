@@ -9,18 +9,21 @@ import fr.eni.clinique.Settings;
 public class JdbcTools {
 private static Connection connection;
 	
-	public static Connection jdbcConnexion() throws SQLException {
-		connection = null;
+	//exécuté la première fois que la classe est appelée 
+	static {
+		//démarrer le driver
 		try {
-			//démarrer le driver
 			Class.forName(Settings.getProperty("driverDB"));
-			//driver se connecte à la bdd
-			connection = DriverManager.getConnection(Settings.getProperty("urldb"),Settings.getProperty("userdb"), Settings.getProperty("passworddb"));
-			
-		
 		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public static Connection jdbcConnexion() throws SQLException {
+		connection = null;
+		//driver se connecte à la bdd
+		connection = DriverManager.getConnection(Settings.getProperty("urldb"),Settings.getProperty("userdb"), Settings.getProperty("passworddb"));
 
 		return connection;
 	}

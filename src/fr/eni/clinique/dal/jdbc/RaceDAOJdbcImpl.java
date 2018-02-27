@@ -159,8 +159,9 @@ public class RaceDAOJdbcImpl implements RaceDAO {
 		try {
 			cnx = getConnection();
 			rqt = cnx.prepareStatement(sqlUpdate);
-			rqt.setString(1, data.getRace());
-			rqt.setString(2, data.getEspece());
+			rqt.setString(1, data.getEspece());
+			rqt.setString(2, data.getRace());
+			rqt.setString(3, data.getEspece());
 		
 			rqt.executeUpdate();
 
@@ -207,44 +208,6 @@ public class RaceDAOJdbcImpl implements RaceDAO {
 
 		}
 		
-	}
-
-	@Override
-	public Race selectByEspece(String espece) throws DALException {
-		
-		Connection cnx = null;
-		PreparedStatement rqt = null;
-		ResultSet rs = null;
-		Race raceAnimal = null;
-		
-		try {
-			cnx = getConnection();
-			rqt = cnx.prepareStatement(sqlSelectByEspece);
-			rqt.setString(1, espece);
-
-			rs = rqt.executeQuery();
-			if (rs.next()) {
-				
-				raceAnimal = new Race(rs.getString("Race"),  	   // String Race
-										 rs.getString("Espece"));  // String Espece
-										 
-			}
-
-		} catch (SQLException e) {
-			throw new DALException("selectByRace failed - id = " + espece, e);
-		} finally {
-			try {
-				
-				if (rqt != null) {
-					rqt.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			closeConnection();
-
-		}
-		return raceAnimal;
 	}
 
 }
