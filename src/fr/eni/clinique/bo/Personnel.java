@@ -23,6 +23,12 @@ public class Personnel {
 		this.archive = archive;
 	}
 
+	public Personnel(String nom, String motDePasse, String role, boolean archive) {
+		this.nom = nom;
+		this.motDePasse = motDePasse;
+		this.role = role;
+		this.archive = archive;
+	}
 	public int getCodePerso() {
 		return codePerso;
 	}

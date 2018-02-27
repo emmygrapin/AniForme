@@ -1,9 +1,7 @@
 package fr.eni.clinique.dal;
 
-import fr.eni.clinique.dal.jdbc.AnimalDAOJdbcImpl;
 import fr.eni.clinique.dal.jdbc.ClientDAOJdbcImpl;
 import fr.eni.clinique.dal.jdbc.PersonnelDAOJdbcImpl;
-import fr.eni.clinique.dal.jdbc.RaceDAOJdbcImpl;
 /**
  * 
  * @author egrapin2017
