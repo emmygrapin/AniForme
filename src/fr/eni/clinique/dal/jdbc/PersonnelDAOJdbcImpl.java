@@ -19,12 +19,12 @@ import fr.eni.clinique.JdbcTools;
  *
  */
 public class PersonnelDAOJdbcImpl implements PersonnelDAO {
-	private static final String sqlSelectById = "select CodePerso, Nom, MotPasse, Role, Archive"
-			+ " from Personnels where CodePerso = ?";
-	private static final String sqlSelectAll = "select CodePerso, Nom, MotPasse, Role, Archive" + " from Personnels";
-	private static final String sqlInsert = "insert into Personnels(Nom, MotPasse, Role, Archive) values(?,?,?,?,?)";
-	private static final String sqlDelete = "delete from client where CodePerso = ?";
-
+	private static final String sqlSelectById = "select CodePers, Nom, MotPasse, Role, Archive"
+			+ " from Personnels where CodePers = ?";
+	private static final String sqlSelectAll = "select CodePers, Nom, MotPasse, Role, Archive" + " from Personnels";
+	private static final String sqlInsert = "insert into Personnels(Nom, MotPasse, Role, Archive) values(?,?,?,?)";
+	private static final String sqlDelete = "delete from client where CodePers = ?";
+	private static final String sqlUpdate = "update Personnels set Nom =?, MotPasse=?,Role=?,Archive=? where CodePers =?";
 	private Connection connection;
 
 	public Connection getConnection() throws SQLException {
@@ -58,7 +58,7 @@ public class PersonnelDAOJdbcImpl implements PersonnelDAO {
 			rqt.setInt(1, codePerso);
 			rs = rqt.executeQuery();
 			if (rs.next()) {
-				personnel = new Personnel(rs.getInt("CodePerso"), rs.getString("Nom"), rs.getString("MotPasse"),
+				personnel = new Personnel(rs.getInt("CodePers"), rs.getString("Nom"), rs.getString("MotPasse"),
 						rs.getString("Role"), rs.getBoolean("Archive"));
 			}
 		} catch (SQLException e) {
@@ -84,24 +84,22 @@ public class PersonnelDAOJdbcImpl implements PersonnelDAO {
 		Statement rqt = null;
 		ResultSet rs = null;
 		List<Personnel> personnels = new ArrayList<Personnel>();
-		try{
+		try {
 			cnx = getConnection();
 			rqt = cnx.createStatement();
 			rs = rqt.executeQuery(sqlSelectAll);
 			Personnel personnel = null;
-			while (rs.next()){
-				personnel = new Personnel(rs.getInt("CodePerso"), rs.getString("Nom"), rs.getString("MotPasse"),
-						rs.getString("Role"), rs.getBoolean("Archive")
-						);
-				
+			while (rs.next()) {
+				personnel = new Personnel(rs.getInt("CodePers"), rs.getString("Nom"), rs.getString("MotPasse"),
+						rs.getString("Role"), rs.getBoolean("Archive"));
+
 				personnels.add(personnel);
 			}
-		}
-		catch(SQLException e){
+		} catch (SQLException e) {
 			throw new DALException("selectAll failed ", e);
 		} finally {
 			try {
-				
+
 				if (rqt != null) {
 					rqt.close();
 				}
@@ -131,9 +129,9 @@ public class PersonnelDAOJdbcImpl implements PersonnelDAO {
 					data.setCodePerso(rs.getInt(1));
 				}
 			}
-		}catch(SQLException e){
+		} catch (SQLException e) {
 			throw new DALException("insert failed ", e);
-		}finally {
+		} finally {
 			try {
 				if (rqt != null) {
 					rqt.close();
@@ -153,7 +151,7 @@ public class PersonnelDAOJdbcImpl implements PersonnelDAO {
 		PreparedStatement rqt = null;
 		try {
 			cnx = getConnection();
-			
+
 			rqt = cnx.prepareStatement(sqlDelete);
 			rqt.setInt(1, codePerso);
 			rqt.executeUpdate();
@@ -171,6 +169,41 @@ public class PersonnelDAOJdbcImpl implements PersonnelDAO {
 
 		}
 
+	}
+
+	@Override
+	public void update(Personnel data) throws DALException {
+
+		Connection cnx = null;
+		PreparedStatement rqt = null;
+		try {
+			cnx = getConnection();
+			rqt = cnx.prepareStatement(sqlUpdate, Statement.RETURN_GENERATED_KEYS);
+			rqt.setString(1, data.getNom());
+			rqt.setString(2, data.getMotDePasse());
+			rqt.setString(3, data.getRole());
+			rqt.setBoolean(4, data.isArchive());
+			rqt.setInt(5, data.getCodePerso());
+			int nbRows = rqt.executeUpdate();
+			if (nbRows == 1) {
+				ResultSet rs = rqt.getGeneratedKeys();
+				if (rs.next()) {
+					data.setCodePerso(rs.getInt(1));
+				}
+			}
+		} catch (SQLException e) {
+			throw new DALException("update failed ", e);
+		} finally {
+			try {
+				if (rqt != null) {
+					rqt.close();
+				}
+			} catch (SQLException e) {
+				throw new DALException("close failed - ", e);
+			}
+			closeConnection();
+
+		}
 	}
 
 }
