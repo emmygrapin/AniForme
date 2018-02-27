@@ -20,12 +20,12 @@ public class Client {
 	private String email;
 	private String remarque;
 	private Boolean archive;
-	private ArrayList<Animaux> animaux;
+	private ArrayList<Animal> animaux;
 	
 	
 	public Client(int codeClient, String nomClient, String prenomClient, String adresse1, String adresse2,
 			String codePostal, String ville, String numeroTel, String assurance, String email, String remarque,
-			Boolean archive, ArrayList<fr.eni.clinique.bo.Animaux> animaux) {
+			Boolean archive, ArrayList<fr.eni.clinique.bo.Animal> animaux) {
 		this.codeClient = codeClient;
 		this.nomClient = nomClient;
 		this.prenomClient = prenomClient;
@@ -56,14 +56,14 @@ public class Client {
 		this.email = email;
 		this.remarque = remarque;
 		this.archive = archive;
-		this.animaux = new ArrayList<Animaux>();
+		this.animaux = new ArrayList<Animal>();
 	}
 	
-	public ArrayList<Animaux> getAnimaux() {
+	public ArrayList<Animal> getAnimaux() {
 		return animaux;
 	}
 
-	public void setAnimaux(ArrayList<Animaux> animaux) {
+	public void setAnimaux(ArrayList<Animal> animaux) {
 		this.animaux = animaux;
 	}
 
