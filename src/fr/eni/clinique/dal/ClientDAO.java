@@ -14,6 +14,8 @@ public interface ClientDAO {
 
 	public Client selectById(int codeClient) throws DALException;
 	
+	public List<Client> selectByNom(String nomClient) throws DALException;
+	
 	public List<Client> selectAll() throws DALException;
 	
 	public Client insert(Client data) throws DALException;

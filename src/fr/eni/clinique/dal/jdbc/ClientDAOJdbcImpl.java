@@ -24,6 +24,8 @@ public class ClientDAOJdbcImpl implements ClientDAO {
 
 	private static final String sqlSelectById = "select CodeClient, NomClient, PrenomClient, Adresse1, Adresse2, CodePostal, Ville, NumTel, Assurance, Email, Remarque, Archive"
 			+ " from Clients where CodeClient = ?";
+	private static final String sqlSelectByNom = "select CodeClient, NomClient, PrenomClient, Adresse1, Adresse2, CodePostal, Ville, NumTel, Assurance, Email, Remarque, Archive"
+			+ " from Clients where NomClient like ?";
 	private static final String sqlSelectAll = "select CodeClient, NomClient, PrenomClient, Adresse1, Adresse2, CodePostal, Ville, NumTel, Assurance, Email, Remarque, Archive"
 			+ " from Clients";
 	private static final String sqlInsert = "insert into Clients(NomClient, PrenomClient, Adresse1, Adresse2, CodePostal, Ville, NumTel, Assurance, Email, Remarque, Archive) values(?,?,?,?,?,?,?,?,?,?,?)";
@@ -102,6 +104,42 @@ public class ClientDAOJdbcImpl implements ClientDAO {
 			cnx = getConnection();
 			rqt = cnx.createStatement();
 			rs = rqt.executeQuery(sqlSelectAll);
+			Client client = null;
+			while (rs.next()){
+				client = new Client(rs.getInt("CodeClient"), rs.getString("NomClient"), rs.getString("PrenomClient"),
+						rs.getString("Adresse1"), rs.getString("Adresse2"), rs.getString("CodePostal"),rs.getString("Ville"), 
+						rs.getString("NumTel"), rs.getString("Assurance"), rs.getString("Email"), rs.getString("Remarque"), rs.getBoolean("Archive")
+						);
+				clients.add(client);
+			}
+		}
+		catch(SQLException e){
+			throw new DALException("selectAll failed ", e);
+		} finally {
+			try {
+				
+				if (rqt != null) {
+					rqt.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			closeConnection();
+		}
+		return clients;
+	}
+	
+	
+	public List<Client> selectByNom(String nom) throws DALException {
+		Connection cnx = null;
+		PreparedStatement rqt = null;
+		ResultSet rs = null;
+		List<Client> clients = new ArrayList<Client>();
+		try{
+			cnx = getConnection();
+			rqt = cnx.prepareStatement(sqlSelectByNom);
+			rqt.setString(1, "%"+nom+"%");
+			rs = rqt.executeQuery();
 			Client client = null;
 			while (rs.next()){
 				client = new Client(rs.getInt("CodeClient"), rs.getString("NomClient"), rs.getString("PrenomClient"),

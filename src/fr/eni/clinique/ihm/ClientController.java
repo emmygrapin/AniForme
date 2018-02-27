@@ -20,9 +20,9 @@ import fr.eni.clinique.dal.DALException;
 
 public class ClientController {
 	
-	private JTextField txtNom, txtPrenom, txtAdresse, txtAdresse2, txtVille, txtCP, txtPhone, txtEmail, txtAssurance;
+	private JTextField txtRechercher, txtNom, txtPrenom, txtAdresse, txtAdresse2, txtVille, txtCP, txtPhone, txtEmail, txtAssurance;
 	private JTextArea txtRemarque;
-	private JButton btnValider, btnAnnuler;
+	private JButton btnValider, btnAnnuler, btnRechercher;
 	
 	private static ClientController _instance;
 
@@ -44,8 +44,8 @@ public class ClientController {
 	
 	public JPanel addClient()
 	{
-		JPanel panelReservation = new JPanel();
-		panelReservation.setLayout(new GridBagLayout());
+		JPanel panelClient = new JPanel();
+		panelClient.setLayout(new GridBagLayout());
 		
 		GridBagConstraints gbc = new GridBagConstraints();
 		
@@ -58,59 +58,59 @@ public class ClientController {
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.gridwidth = 1;
-		panelReservation.add(getBtnSave(), gbc);
+		panelClient.add(getBtnSave(), gbc);
 		gbc.gridx = 1;
-		panelReservation.add(getBtnCancel(), gbc);	
+		panelClient.add(getBtnCancel(), gbc);	
 		
 		gbc.anchor = GridBagConstraints.LINE_START;
 		
 		gbc.gridwidth = 1;
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		panelReservation.add(new JLabel("Nom : "), gbc);
+		panelClient.add(new JLabel("Nom : "), gbc);
 		gbc.gridy = 2;
-		panelReservation.add(new JLabel("Prenom : "), gbc);
+		panelClient.add(new JLabel("Prenom : "), gbc);
 		gbc.gridy = 3;
-		panelReservation.add(new JLabel("Adresse : "), gbc);
+		panelClient.add(new JLabel("Adresse : "), gbc);
 		gbc.gridy = 4;
-		panelReservation.add(new JLabel("Adresse 2 : "), gbc);
+		panelClient.add(new JLabel("Adresse 2 : "), gbc);
 		gbc.gridy = 5;
-		panelReservation.add(new JLabel("Code Postale : "), gbc);
+		panelClient.add(new JLabel("Code Postale : "), gbc);
 		gbc.gridy = 6;
-		panelReservation.add(new JLabel("Ville : "), gbc);
+		panelClient.add(new JLabel("Ville : "), gbc);
 		gbc.gridy = 7;
-		panelReservation.add(new JLabel("Téléphone : "), gbc);
+		panelClient.add(new JLabel("Téléphone : "), gbc);
 		gbc.gridy = 8;
-		panelReservation.add(new JLabel("Assurance : "), gbc);
+		panelClient.add(new JLabel("Assurance : "), gbc);
 		gbc.gridy = 9;
-		panelReservation.add(new JLabel("Email : "), gbc);
+		panelClient.add(new JLabel("Email : "), gbc);
 		gbc.gridy = 10;
-		panelReservation.add(new JLabel("Remarque : "), gbc);
+		panelClient.add(new JLabel("Remarque : "), gbc);
 		
 		//Colonne 2
 		gbc.gridx = 1;
 		gbc.gridy = 1;
-		panelReservation.add(addFieldNom(), gbc);
+		panelClient.add(addFieldNom(), gbc);
 		gbc.gridy = 2;
-		panelReservation.add(addFieldPrenom(), gbc);
+		panelClient.add(addFieldPrenom(), gbc);
 		gbc.gridy = 3;
-		panelReservation.add(addFieldAdresse(), gbc);
+		panelClient.add(addFieldAdresse(), gbc);
 		gbc.gridy = 4;
-		panelReservation.add(addFieldAdresse2(), gbc);
+		panelClient.add(addFieldAdresse2(), gbc);
 		gbc.gridy = 5;
-		panelReservation.add(addFieldCP(), gbc);
+		panelClient.add(addFieldCP(), gbc);
 		gbc.gridy = 6;
-		panelReservation.add(addFieldVille(), gbc);
+		panelClient.add(addFieldVille(), gbc);
 		gbc.gridy = 7;
-		panelReservation.add(addFieldTelephone(), gbc);
+		panelClient.add(addFieldTelephone(), gbc);
 		gbc.gridy = 8;
-		panelReservation.add(addFieldAssurance(), gbc);
+		panelClient.add(addFieldAssurance(), gbc);
 		gbc.gridy = 9;
-		panelReservation.add(addFieldEmail(), gbc);
+		panelClient.add(addFieldEmail(), gbc);
 		gbc.gridy = 10;
-		panelReservation.add(addFieldRemarque(), gbc);		
+		panelClient.add(addFieldRemarque(), gbc);		
 		
-		return panelReservation;
+		return panelClient;
 	}
 	
 	
@@ -196,6 +196,14 @@ public class ClientController {
 			}
 			return this.txtRemarque;
 		}
+		
+		private JTextField addFieldRecherche()
+		{
+			if (this.txtRechercher == null) {
+				this.txtRechercher = new JTextField(20);
+			}
+			return this.txtRechercher;
+		}
 	
 		//Button
 		public JButton getBtnSave()
@@ -258,12 +266,12 @@ public class ClientController {
 		
 		
 		//Panel d'affichage des clients
-		public JPanel viewClient() throws DALException
+		public JPanel viewClient(String recherche) throws DALException
 		{
 			
 			ClientManager clientManager = ClientManager.getInstance() ;
 			
-			List<Client> clients = clientManager.getClients();
+			List<Client> clients = clientManager.getClientsByNom(recherche);
 		
 			JPanel panelClients = new JPanel();
 			panelClients.setLayout(new GridBagLayout());
@@ -272,9 +280,18 @@ public class ClientController {
 			
 			//Espace entre les cases
 			gbc.insets = new Insets(5, 5, 5, 5);
-			int y = 0;
+			int y = 1;
 			gbc.gridx = 0;
-		
+			gbc.gridy = 0;
+			panelClients.add(new JLabel("Rechercher : "), gbc);
+			gbc.gridx = 1;
+			panelClients.add(addFieldRecherche(), gbc);	
+			gbc.gridx = 2;
+			panelClients.add(getBtnSearch(), gbc);
+			
+			gbc.gridx = 0;
+			gbc.gridwidth = 3;
+			
 			for(Client client:clients)
 			{
 				gbc.gridy = y;
@@ -298,7 +315,7 @@ public class ClientController {
 			//Espace entre les cases
 			gbc.insets = new Insets(5, 5, 5, 5);
 			//Alignement à gauche
-			gbc.anchor = GridBagConstraints.LINE_START;
+			gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 			
 			
 			
@@ -306,21 +323,144 @@ public class ClientController {
 			gbc.gridy = 0;
 			
 			gbc.gridx = 0;
-			panelClient.add(new JLabel(client.getNomClient()), gbc);
+			panelClient.add(new JLabel(client.getNomClient() +" - "), gbc);
 			gbc.gridx = 1;
-			panelClient.add(new JLabel(client.getPrenomClient()), gbc);
+			panelClient.add(new JLabel(client.getPrenomClient() + " - "), gbc);
 			gbc.gridx = 2;
-			panelClient.add(new JLabel(client.getEmail()), gbc);
+			panelClient.add(new JLabel(client.getCodePostal()+ " - "), gbc);
 			gbc.gridx = 3;
-			
+			panelClient.add(new JLabel(client.getVille()), gbc);
+			gbc.gridx = 4;
+			panelClient.add(new JLabel(client.getVille()), gbc);
+			gbc.gridx = 5;
+			panelClient.add(addModifierButton(client), gbc);
 			
 			return panelClient;
 		}
 		
+		public JButton addModifierButton(Client client){
+			JButton modifierButton = new JButton("Modifier");
+			modifierButton.addActionListener(new ActionListener(){
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try {
+												
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			});
+			return modifierButton;	
+		}
+		
+		public JButton getBtnSearch()
+		{
+			if(btnRechercher == null)
+			{
+				btnRechercher = new JButton("Rechercher");
+				btnRechercher.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e)
+					{
+						List<String> listeString = new ArrayList<>();
+						listeString.add(txtRechercher.getText());
+						try {
+							ApplyController.getInstance().move("listClient", listeString);
+						} catch (DALException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+				});
+			}
+			return btnRechercher;
+		}
 		
 		
-		
-		
+		public JPanel upClient(Client client)
+		{
+			JPanel panelClient = new JPanel();
+			panelClient.setLayout(new GridBagLayout());
+			
+			GridBagConstraints gbc = new GridBagConstraints();
+			
+			//Espace entre les cases
+			gbc.insets = new Insets(5, 5, 5, 5);
+			gbc.anchor = GridBagConstraints.LINE_START;
+			
+			//Colonne 1
+			
+			gbc.gridx = 0;
+			gbc.gridy = 0;
+			gbc.gridwidth = 1;
+			panelClient.add(getBtnSave(), gbc);
+			gbc.gridx = 1;
+			panelClient.add(getBtnCancel(), gbc);	
+			
+			gbc.anchor = GridBagConstraints.LINE_START;
+			
+			gbc.gridwidth = 1;
+			gbc.gridx = 0;
+			gbc.gridy = 1;
+			panelClient.add(new JLabel("Nom : "), gbc);
+			gbc.gridy = 2;
+			panelClient.add(new JLabel("Prenom : "), gbc);
+			gbc.gridy = 3;
+			panelClient.add(new JLabel("Adresse : "), gbc);
+			gbc.gridy = 4;
+			panelClient.add(new JLabel("Adresse 2 : "), gbc);
+			gbc.gridy = 5;
+			panelClient.add(new JLabel("Code Postale : "), gbc);
+			gbc.gridy = 6;
+			panelClient.add(new JLabel("Ville : "), gbc);
+			gbc.gridy = 7;
+			panelClient.add(new JLabel("Téléphone : "), gbc);
+			gbc.gridy = 8;
+			panelClient.add(new JLabel("Assurance : "), gbc);
+			gbc.gridy = 9;
+			panelClient.add(new JLabel("Email : "), gbc);
+			gbc.gridy = 10;
+			panelClient.add(new JLabel("Remarque : "), gbc);
+			
+			//Colonne 2
+			gbc.gridx = 1;
+			gbc.gridy = 1;
+			panelClient.add(addFieldNom(), gbc);
+			gbc.gridy = 2;
+			panelClient.add(addFieldPrenom(), gbc);
+			gbc.gridy = 3;
+			panelClient.add(addFieldAdresse(), gbc);
+			gbc.gridy = 4;
+			panelClient.add(addFieldAdresse2(), gbc);
+			gbc.gridy = 5;
+			panelClient.add(addFieldCP(), gbc);
+			gbc.gridy = 6;
+			panelClient.add(addFieldVille(), gbc);
+			gbc.gridy = 7;
+			panelClient.add(addFieldTelephone(), gbc);
+			gbc.gridy = 8;
+			panelClient.add(addFieldAssurance(), gbc);
+			gbc.gridy = 9;
+			panelClient.add(addFieldEmail(), gbc);
+			gbc.gridy = 10;
+			panelClient.add(addFieldRemarque(), gbc);		
+			
+			txtNom.setText(client.getNomClient());
+			txtPrenom.setText(client.getPrenomClient());
+			txtAdresse.setText(client.getAdresse1());
+			txtAdresse2.setText(client.getAdresse2());
+			txtCP.setText(client.getCodePostal());
+			txtVille.setText(client.getVille());
+			txtPhone.setText(client.getNumeroTel());
+			txtAssurance.setText(client.getAssurance());
+			txtEmail.setText(client.getEmail());
+			txtRemarque.setText(client.getRemarque());
+			
+			return panelClient;
+		}
 		
 		
 		
