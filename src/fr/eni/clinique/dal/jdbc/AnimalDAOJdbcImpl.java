@@ -5,21 +5,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
 import fr.eni.clinique.JdbcTools;
 import fr.eni.clinique.bo.Animal;
 import fr.eni.clinique.dal.AnimalDAO;
-import fr.eni.clinique.dal.DALException;
-import fr.eni.clinique.dal.RaceDAO;
-import fr.eni.papeterie.bo.Ramette;
-import fr.eni.papeterie.bo.Stylo;
-import fr.eni.reservation.bo.Reservation;
-import fr.eni.reservation.dal.SpectacleDAO;
 import fr.eni.clinique.dal.ClientDAO;
+import fr.eni.clinique.dal.DALException;
 import fr.eni.clinique.dal.DAOFactory;
+import fr.eni.clinique.dal.RaceDAO;
 
 /**
  * 
@@ -27,15 +22,19 @@ import fr.eni.clinique.dal.DAOFactory;
  *
  */
 public class AnimalDAOJdbcImpl implements AnimalDAO{
-													//CodeAnimal NomAnimal Couleur Race  Espece  CodeClient Tatouage Antecedents Archive
-	private static final String sqlSelectById = "select CodeAnimal, NomAnimal, Couleur, Race, CodeClient, Tatouage, Antecedents, Archive  "
-			+ " from Animaux where CodeAnimal like ?";
-	private static final String sqlSelectAll = "select CodeAnimal, NomAnimal, Couleur, Race, CodeClient, Tatouage, Antecedents, Archive from Animaux";
-	private static final String sqlInsert = "insert into Animaux(NomAnimal, Couleur, Race, CodeClient, Tatouage, Antecedents, Archive) values(?,?,?,?,?,?,?)";
-	private static final String sqlUpdate = "update Animaux set NomAnimal=?, Couleur=?,Race=?, CodeClient=?, Tatouage=?, Antecedents=?, Archive=? where CodeAnimal=?";
+													
+	private static final String sqlSelectById = "select CodeAnimal, NomAnimal, Couleur, Races.Race,Races.Espece, CodeClient, Tatouage, Antecedents, Archive  "
+			+ " from Animaux join Races on Animaux.Race = Races.Race where CodeAnimal like ?";
+	private static final String sqlSelectAll = "select CodeAnimal, NomAnimal, Sexe, Couleur, Races.Race, Races.Espece, CodeClient, Tatouage, Antecedents, Archive from Animaux join Races on Races.Race = Animaux.Race";
+	
+	/*INSERT INTO MyTable  (PriKey, Description)
+    SELECT ForeignKey, Description
+    FROM SomeView;*/
+	private static final String sqlInsert = "insert into Animaux(NomAnimal, Sexe, Couleur, Race, Espece, CodeClient, Tatouage, Antecedents, Archive) values(?,?,?,?,?,?,?,?,?)";
+	private static final String sqlUpdate = "update Animaux set CodeAnimal=?, NomAnimal=?, Sexe=?, Couleur=?,Race=?,Espece=?, CodeClient=?, Tatouage=?, Antecedents=?, Archive=? where CodeAnimal=?";
 	private static final String sqlDelete = "delete from Animaux where CodeAnimal=?";
-	private static final String sqlSelectByRace = "select CodeAnimal, NomAnimal, Couleur, Race, CodeClient, Tatouage, Antecedents, Archive "
-			+ "from Animaux where Race like ?";
+	private static final String sqlSelectByRace = "select CodeAnimal, NomAnimal, Couleur, Races.Race,Races.Espece, CodeClient, Tatouage, Antecedents, Archive "
+			+ "from Animaux join Races on Races.Race = Animaux.Race where Race like ?";
 	
 	private Connection connection;
 	
@@ -82,11 +81,11 @@ public class AnimalDAOJdbcImpl implements AnimalDAO{
 										 rs.getString("NomAnimal"),   					// String nomAnimal
 										 rs.getString("Sexe"),  						// String sexe                    
 										 rs.getString("Couleur"),         			   	// String couleur       
-										 raceDAO.selectById(rs.getString("Race")), 		// Race race 
+										 raceDAO.selectById(rs.getString("Race"), rs.getString("Espece")), // Race race, Race espece 
 										 clientDAO.selectById(rs.getInt("CodeClient")), // int CodeClient
 										 rs.getString("Tatouage"),                      // String Tatouage
 										 rs.getString("Antecedents"),                   // String Antecedents
-										 rs.getBoolean("Archive"));                     // Bit archive
+										 rs.getBoolean("Archive"));                     // Boolean archive
 										 
 			}
 
@@ -105,8 +104,6 @@ public class AnimalDAOJdbcImpl implements AnimalDAO{
 
 		}
 		return animal;
-		
-		return null;
 	}
 
 	@Override
@@ -121,7 +118,7 @@ public class AnimalDAOJdbcImpl implements AnimalDAO{
 			rqt = cnx.createStatement();
 			rs = rqt.executeQuery(sqlSelectAll);
 			Animal animal = null;
-			RaceDAO raceDAO = DAOFactory.getSpectacleDAO();
+			RaceDAO raceDAO = DAOFactory.getRaceDAO();
 			ClientDAO clientDAO = DAOFactory.getClientDAO();
 
 			while (rs.next()) {
@@ -129,12 +126,12 @@ public class AnimalDAOJdbcImpl implements AnimalDAO{
 				animal = new Animal(rs.getInt("CodeAnimal"),            // int CodeAnimal    
 						rs.getString("NomAnimal"),   					// String nomAnimal
 						 rs.getString("Sexe"),  						// String sexe                    
-						 rs.getString("Couleur"),         			   	// String couleur       
-						 raceDAO.selectById(rs.getString("Race")), 		// Race race 
+						 rs.getString("Couleur"),         // String couleur       
+						 raceDAO.selectById(rs.getString("Race"), rs.getString("Espece")), //Race race, Race Espece
 						 clientDAO.selectById(rs.getInt("CodeClient")), // Client CodeClient
 						 rs.getString("Tatouage"),                      // String Tatouage
 						 rs.getString("Antecedents"),                   // String Antecedents
-						 rs.getBoolean("Archive"));                     // Bit archive
+						 rs.getBoolean("Archive"));                     // Boolean archive
 				
 				liste.add(animal);
 			}
@@ -163,16 +160,23 @@ public class AnimalDAOJdbcImpl implements AnimalDAO{
 		PreparedStatement rqt = null;
 		try {
 			cnx = getConnection();
-			rqt = cnx.prepareStatement(sqlInsert);
+			rqt = cnx.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS);
 			rqt.setString(1, data.getNomAnimal());  			  // NomAnimal
 			rqt.setString(2, data.getSexe());                     // Sexe
 			rqt.setString(3, data.getCouleur());                  // Couleur
 			rqt.setString(4, data.getRace().getRace());           // Race
-			rqt.setInt(5, data.getClient().getCodeClient());        // CodeClient
-			rqt.setString(6, data.getTatouage());  			  // Antecedents
-			rqt.setString(7, data.getAntecedents());  			  // Antecedents
-			rqt.setBoolean(8, data.isArchive());		      	  // Archive
-			
+			rqt.setString(5, data.getRace().getEspece());           // Espece
+			rqt.setInt(6, data.getClient().getCodeClient());        // CodeClient
+			rqt.setString(7, data.getTatouage());  			  // Antecedents
+			rqt.setString(8, data.getAntecedents());  			  // Antecedents
+			rqt.setBoolean(9, data.isArchive());		      	  // Archive
+			int nbRows = rqt.executeUpdate();
+			if (nbRows == 1) {
+				ResultSet rs = rqt.getGeneratedKeys();
+				if (rs.next()) {
+					data.setCodeAnimal(rs.getInt(1));
+				}
+			}
 
 		} catch (SQLException e) {
 			throw new DALException("Insert article failed - " + data, e);
@@ -193,20 +197,29 @@ public class AnimalDAOJdbcImpl implements AnimalDAO{
 
 	@Override
 	public void update(Animal data) throws DALException {
+		
 		Connection cnx = null;
 		PreparedStatement rqt = null;
 		try {
 			cnx = getConnection();
-			rqt = cnx.prepareStatement(sqlUpdate);
+			rqt = cnx.prepareStatement(sqlUpdate, Statement.RETURN_GENERATED_KEYS);
 			rqt.setString(1, data.getNomAnimal());
-			rqt.setString(2, data.getCouleur());
-			rqt.setString(3, data.getRace().getRace());
-			rqt.setInt(4, data.getClient().getCodeClient());
-			rqt.setString(5, data.getTatouage());
-			rqt.setString(6, data.getAntecedents());
-			rqt.setBoolean(7, data.isArchive());
+			rqt.setString(2, data.getSexe());
+			rqt.setString(3, data.getCouleur());
+			rqt.setString(4, data.getRace().getRace());
+			rqt.setString(5, data.getRace().getEspece());
+			rqt.setInt(6, data.getClient().getCodeClient());
+			rqt.setString(7, data.getTatouage());
+			rqt.setString(8, data.getAntecedents());
+			rqt.setBoolean(9, data.isArchive());
 
-			rqt.executeUpdate();
+			int nbRows = rqt.executeUpdate();
+			if (nbRows == 1) {
+				ResultSet rs = rqt.getGeneratedKeys();
+				if (rs.next()) {
+					data.setCodeAnimal(rs.getInt(1));
+				}
+			}
 
 		} catch (SQLException e) {
 			throw new DALException("Update article failed - " + data, e);
@@ -227,6 +240,7 @@ public class AnimalDAOJdbcImpl implements AnimalDAO{
 
 	@Override
 	public void delete(int codeAnimal) throws DALException {
+		
 		Connection cnx = null;
 		PreparedStatement rqt = null;
 		try {
@@ -252,7 +266,7 @@ public class AnimalDAOJdbcImpl implements AnimalDAO{
 	}
 
 	@Override
-	public Animal selectByRace(int race) throws DALException {
+	public Animal selectByRace(String race) throws DALException {
 			
 			Connection cnx = null;
 			PreparedStatement rqt = null;
@@ -263,8 +277,8 @@ public class AnimalDAOJdbcImpl implements AnimalDAO{
 			
 			try {
 				cnx = getConnection();
-				rqt = cnx.prepareStatement(sqlSelectById);
-				rqt.setInt(1, race);
+				rqt = cnx.prepareStatement(sqlSelectByRace);
+				rqt.setString(1, race);
 
 				rs = rqt.executeQuery();
 				if (rs.next()) {
@@ -273,7 +287,7 @@ public class AnimalDAOJdbcImpl implements AnimalDAO{
 											 rs.getString("NomAnimal"),   					// String nomAnimal
 											 rs.getString("Sexe"),  						// String sexe                    
 											 rs.getString("Couleur"),         			   	// String couleur       
-											 raceDAO.selectById(rs.getString("Race")), 		// Race race 
+											 raceDAO.selectById(rs.getString("Race"),rs.getString("Espece")), // Race race, Race espece
 											 clientDAO.selectById(rs.getInt("CodeClient")), // int CodeClient
 											 rs.getString("Tatouage"),                      // String Tatouage
 											 rs.getString("Antecedents"),                   // String Antecedents
@@ -282,7 +296,7 @@ public class AnimalDAOJdbcImpl implements AnimalDAO{
 				}
 
 			} catch (SQLException e) {
-				throw new DALException("selectById failed - id = " + race, e);
+				throw new DALException("selectByRace failed - id = " + race, e);
 			} finally {
 				try {
 					

@@ -22,6 +22,6 @@ public interface AnimalDAO {
 	
 	public void delete(int codeAnimal)throws DALException;
 	
-	public Animal selectByRace(int race) throws DALException;
+	public Animal selectByRace(String race) throws DALException;
 
 }
