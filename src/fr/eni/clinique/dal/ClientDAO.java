@@ -2,7 +2,7 @@ package fr.eni.clinique.dal;
 
 import java.util.List;
 
-import fr.eni.clinique.bo.Clients;
+import fr.eni.clinique.bo.Client;
 
 /**
  * 
@@ -12,13 +12,13 @@ import fr.eni.clinique.bo.Clients;
 
 public interface ClientDAO {
 
-	public Clients selectById(int codeClient) throws DALException;
+	public Client selectById(int codeClient) throws DALException;
 	
-	public List<Clients> selectAll() throws DALException;
+	public List<Client> selectAll() throws DALException;
 	
-	public void insert(Clients data) throws DALException;
+	public Client insert(Client data) throws DALException;
 	
-	public void update(Clients data) throws DALException;
+	public void update(Client data) throws DALException;
 	
 	public void delete(int codeClient) throws DALException;
 	
