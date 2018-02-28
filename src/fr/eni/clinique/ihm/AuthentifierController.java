@@ -19,7 +19,7 @@ import fr.eni.clinique.ihm.AuthentifierController;
 /**
  * 
  * @author egrapin2017
- * Contenu du panel contenu dans la boîte de dialogue d'authentification
+ * Panel contenu dans la boîte de dialogue d'authentification
  */
 public class AuthentifierController {
 	private JTextField txtNom, txtMotDePasse;
@@ -63,17 +63,18 @@ public class AuthentifierController {
 
 		return panelAuthentification;
 	}
-
+	// Champs identifiant de l'utilisateur
 	public JTextField addFieldIdentifiant() {
 		this.txtNom = new JTextField(20);
 		return txtNom;
 	}
-
+	// Champs mot de passe de l'utilisateur
 	public JTextField addFieldMotDePasse() {
 		this.txtMotDePasse = new JPasswordField(20);
 		return txtMotDePasse;
 	}
-
+	// Bouton valider qui génère l'action du login manager en lui passant l'identifiant
+	// et le mot de passe saisis
 	public JButton addButtonValider() {
 		this.buttonValider = new JButton("Valider");
 

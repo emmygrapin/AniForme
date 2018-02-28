@@ -21,10 +21,12 @@ import fr.eni.clinique.JdbcTools;
 public class PersonnelDAOJdbcImpl implements PersonnelDAO {
 	private static final String sqlSelectById = "select CodePers, Nom, MotPasse, Role, Archive"
 			+ " from Personnels where CodePers = ?";
-	private static final String sqlSelectAll = "select CodePers, Nom, MotPasse, Role, Archive" + " from Personnels";
+	private static final String sqlSelectAll = "select CodePers, Nom, MotPasse, Role, Archive"
+			+ " from Personnels where Archive = 0";
 	private static final String sqlInsert = "insert into Personnels(Nom, MotPasse, Role, Archive) values(?,?,?,?)";
 	private static final String sqlDelete = "delete from client where CodePers = ?";
-	private static final String sqlUpdate = "update Personnels set Nom =?, MotPasse=?,Role=?,Archive=? where CodePers =?";
+	private static final String sqlUpdateMdp = "update Personnels set MotPasse=? where CodePers =?";
+	private static final String sqlUpdateArchive = "update Personnels set Archive=? where CodePers =?";
 	private Connection connection;
 
 	public Connection getConnection() throws SQLException {
@@ -78,6 +80,9 @@ public class PersonnelDAOJdbcImpl implements PersonnelDAO {
 		return personnel;
 	}
 
+	/**
+	 * selectionne tout le personnel qui n'est pas archivé
+	 */
 	@Override
 	public List<Personnel> selectAll() throws DALException {
 		Connection cnx = null;
@@ -171,19 +176,19 @@ public class PersonnelDAOJdbcImpl implements PersonnelDAO {
 
 	}
 
+	/**
+	 * Méthode qui update le champs "IsArchive" de Personnel en bdd
+	 */
 	@Override
-	public void update(Personnel data) throws DALException {
+	public void updateIsArchive(Personnel data) throws DALException {
 
 		Connection cnx = null;
 		PreparedStatement rqt = null;
 		try {
 			cnx = getConnection();
-			rqt = cnx.prepareStatement(sqlUpdate, Statement.RETURN_GENERATED_KEYS);
-			rqt.setString(1, data.getNom());
-			rqt.setString(2, data.getMotDePasse());
-			rqt.setString(3, data.getRole());
-			rqt.setBoolean(4, data.isArchive());
-			rqt.setInt(5, data.getCodePerso());
+			rqt = cnx.prepareStatement(sqlUpdateArchive, Statement.RETURN_GENERATED_KEYS);
+			rqt.setBoolean(1, data.isArchive());
+			rqt.setInt(2, data.getCodePerso());
 			int nbRows = rqt.executeUpdate();
 			if (nbRows == 1) {
 				ResultSet rs = rqt.getGeneratedKeys();
@@ -192,7 +197,7 @@ public class PersonnelDAOJdbcImpl implements PersonnelDAO {
 				}
 			}
 		} catch (SQLException e) {
-			throw new DALException("update failed ", e);
+			throw new DALException("Archive failed ", e);
 		} finally {
 			try {
 				if (rqt != null) {
@@ -204,6 +209,47 @@ public class PersonnelDAOJdbcImpl implements PersonnelDAO {
 			closeConnection();
 
 		}
+	}
+
+	/**
+	 * Méthode qui update le mot de passe de Personnel en bdd
+	 */
+	@Override
+	public void updateMotDePasse(Personnel data) throws DALException {
+
+		Connection cnx = null;
+		PreparedStatement rqt = null;
+		try {
+			cnx = getConnection();
+			rqt = cnx.prepareStatement(sqlUpdateMdp, Statement.RETURN_GENERATED_KEYS);
+			rqt.setString(1, data.getMotDePasse());
+			rqt.setInt(2, data.getCodePerso());
+			int nbRows = rqt.executeUpdate();
+			if (nbRows == 1) {
+				ResultSet rs = rqt.getGeneratedKeys();
+				if (rs.next()) {
+					data.setCodePerso(rs.getInt(1));
+				}
+			}
+		} catch (SQLException e) {
+			throw new DALException("Reset failed ", e);
+		} finally {
+			try {
+				if (rqt != null) {
+					rqt.close();
+				}
+			} catch (SQLException e) {
+				throw new DALException("close failed - ", e);
+			}
+			closeConnection();
+
+		}
+	}
+
+	@Override
+	public void update(Personnel data) throws DALException {
+		// TODO Auto-generated method stub
+
 	}
 
 }
