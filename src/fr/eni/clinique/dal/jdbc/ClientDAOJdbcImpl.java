@@ -25,9 +25,11 @@ public class ClientDAOJdbcImpl implements ClientDAO {
 	private static final String sqlSelectById = "select CodeClient, NomClient, PrenomClient, Adresse1, Adresse2, CodePostal, Ville, NumTel, Assurance, Email, Remarque, Archive"
 			+ " from Clients where CodeClient = ?";
 	private static final String sqlSelectByNom = "select CodeClient, NomClient, PrenomClient, Adresse1, Adresse2, CodePostal, Ville, NumTel, Assurance, Email, Remarque, Archive"
-			+ " from Clients where NomClient like ?";
+			+ " from Clients where NomClient like ? "
+			+ "And Archive = 0";
 	private static final String sqlSelectAll = "select CodeClient, NomClient, PrenomClient, Adresse1, Adresse2, CodePostal, Ville, NumTel, Assurance, Email, Remarque, Archive"
-			+ " from Clients";
+			+ " from Clients "
+			+ "Where Archive = 0";
 	private static final String sqlInsert = "insert into Clients(NomClient, PrenomClient, Adresse1, Adresse2, CodePostal, Ville, NumTel, Assurance, Email, Remarque, Archive) values(?,?,?,?,?,?,?,?,?,?,?)";
 	private static final String sqlDelete = "delete from Clients where CodeClient = ?";
 	private static final String sqlUpdate = "update Clients set NomClient = ?, PrenomClient = ?, Adresse1 = ?, Adresse2 = ?, CodePostal = ?, Ville = ?, NumTel = ?, Assurance = ? , Email = ? , Remarque = ?, Archive = ?"

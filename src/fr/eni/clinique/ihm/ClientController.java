@@ -1,5 +1,7 @@
 package fr.eni.clinique.ihm;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -22,7 +24,7 @@ public class ClientController {
 	
 	private JTextField txtRechercher, txtNom, txtPrenom, txtAdresse, txtAdresse2, txtVille, txtCP, txtPhone, txtEmail, txtAssurance;
 	private JTextArea txtRemarque;
-	private JButton btnValider, btnAnnuler, btnRechercher;
+	private JButton btnValider, btnAnnuler, btnRechercher, btnAjouter, btnArchiver;
 	
 	private static ClientController _instance;
 
@@ -58,9 +60,9 @@ public class ClientController {
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.gridwidth = 1;
-		panelClient.add(getBtnSave(), gbc);
+		//panelClient.add(getBtnSave(true, null), gbc);
 		gbc.gridx = 1;
-		panelClient.add(getBtnCancel(), gbc);	
+		//panelClient.add(getBtnCancel(), gbc);	
 		
 		gbc.anchor = GridBagConstraints.LINE_START;
 		
@@ -111,162 +113,19 @@ public class ClientController {
 		panelClient.add(addFieldRemarque(), gbc);		
 		
 		return panelClient;
-	}
-	
-	
-	//TextField
-		private JTextField addFieldNom()
-		{
-			if (this.txtNom == null) {
-				this.txtNom = new JTextField(20);
-			}
-			return this.txtNom;
-		}
+	}		
 		
-		private JTextField addFieldPrenom()
-		{
-			if (this.txtPrenom == null) {
-				this.txtPrenom = new JTextField(20);
-			}
-			return this.txtPrenom;
-		}
-		
-		private JTextField addFieldAdresse()
-		{
-			if (this.txtAdresse == null) {
-				this.txtAdresse = new JTextField(20);
-			}
-			return this.txtAdresse;
-		}
-		
-		private JTextField addFieldAdresse2()
-		{
-			if (this.txtAdresse2 == null) {
-				this.txtAdresse2 = new JTextField(20);
-			}
-			return this.txtAdresse2;
-		}
-		
-		private JTextField addFieldCP()
-		{
-			if (this.txtCP == null) {
-				this.txtCP = new JTextField(20);
-			}
-			return this.txtCP;
-		}
-		
-		private JTextField addFieldVille()
-		{
-			if (this.txtVille == null) {
-				this.txtVille = new JTextField(20);
-			}
-			return this.txtVille;
-		}
-		
-		private JTextField addFieldTelephone()
-		{
-			if (this.txtPhone == null) {
-				this.txtPhone = new JTextField(20);
-			}
-			return this.txtPhone;
-		}
-		
-		private JTextField addFieldAssurance()
-		{
-			if (this.txtAssurance == null) {
-				this.txtAssurance = new JTextField(20);
-			}
-			return this.txtAssurance;
-		}
-		
-		private JTextField addFieldEmail()
-		{
-			if (this.txtEmail == null) {
-				this.txtEmail = new JTextField(20);
-			}
-			return this.txtEmail;
-		}
-		
-		private JTextArea addFieldRemarque()
-		{
-			if (this.txtRemarque == null) {
-				this.txtRemarque = new JTextArea(8, 20);
-				this.txtRemarque.setLineWrap(true);
-				this.txtRemarque.setWrapStyleWord(true);
-			}
-			return this.txtRemarque;
-		}
-		
-		private JTextField addFieldRecherche()
-		{
-			if (this.txtRechercher == null) {
-				this.txtRechercher = new JTextField(20);
-			}
-			return this.txtRechercher;
-		}
-	
-		//Button
-		public JButton getBtnSave()
-		{
-			if(btnValider == null)
-			{
-				btnValider = new JButton("Valider");
-				btnValider.addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent e)
-					{
-						if(txtNom.getText().isEmpty() || txtPrenom.getText().isEmpty()  || txtAdresse.getText().isEmpty() || txtVille.getText().isEmpty() || txtCP.getText().isEmpty() || txtPhone.getText().isEmpty())
-						{
-							//ApplyController.getInstance().message("requiredFields");
-						}
-						else
-						{
-							try {
-								Client client = newClient();
-								ApplyController.getInstance().move("listResa", new ArrayList());
-							} catch (DALException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
-						}
-					}
-				});
-			}
-			return btnValider;
-		}
-		
-		public JButton getBtnCancel()
-		{
-			if(btnAnnuler == null)
-			{
-				btnAnnuler = new JButton("Annuler");
-				btnAnnuler.addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent e)
-					{
-						
-					}
-				});
-			}
-			return btnAnnuler;
-		}
-	
 		//Création du nouveau client
 		public Client newClient() throws DALException
 		{	
-			ClientManager clientManager = ClientManager.getInstance();
 			Client client = new Client(0, txtNom.getText(), txtPrenom.getText(), txtAdresse.getText(), txtAdresse2.getText(), txtCP.getText(), txtVille.getText(), txtPhone.getText(), txtAssurance.getText(), txtEmail.getText(), txtRemarque.getText(), false);
-			System.out.println(client.toString());
-			clientManager.addClient(client);
 			return client;
 		}
 		
 		
 		
 		//Panel d'affichage des clients
-		public JPanel viewClient(String recherche) throws DALException
+		public JPanel chercheClient(String recherche) throws DALException
 		{
 			
 			ClientManager clientManager = ClientManager.getInstance() ;
@@ -277,6 +136,7 @@ public class ClientController {
 			panelClients.setLayout(new GridBagLayout());
 			
 			GridBagConstraints gbc = new GridBagConstraints();
+			gbc.anchor = GridBagConstraints.WEST;
 			
 			//Espace entre les cases
 			gbc.insets = new Insets(5, 5, 5, 5);
@@ -308,16 +168,14 @@ public class ClientController {
 		public JPanel viewUnClient(Client client)
 		{
 			JPanel panelClient = new JPanel();
-			panelClient.setLayout(new GridBagLayout());
-			
+			panelClient.setLayout(new GridBagLayout());			
 			GridBagConstraints gbc = new GridBagConstraints();
-			
+		
 			//Espace entre les cases
-			gbc.insets = new Insets(5, 5, 5, 5);
-			//Alignement à gauche
-			gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+			gbc.insets = new Insets(5, 5, 5, 5);	
 			
-			
+			Dimension dim = new Dimension(600,50);
+			panelClient.setPreferredSize(dim);
 			
 			// Ligne 1
 			gbc.gridy = 0;
@@ -330,54 +188,16 @@ public class ClientController {
 			panelClient.add(new JLabel(client.getCodePostal()+ " - "), gbc);
 			gbc.gridx = 3;
 			panelClient.add(new JLabel(client.getVille()), gbc);
-			gbc.gridx = 4;
-			panelClient.add(new JLabel(client.getVille()), gbc);
-			gbc.gridx = 5;
-			panelClient.add(addModifierButton(client), gbc);
 			
+			gbc.weightx = 1;
+			gbc.gridx = 4;
+			gbc.anchor = GridBagConstraints.LINE_END;
+			panelClient.add(addModifierButton(client), gbc);		
+			panelClient.setBackground(Color.WHITE);
 			return panelClient;
 		}
 		
-		public JButton addModifierButton(Client client){
-			JButton modifierButton = new JButton("Modifier");
-			modifierButton.addActionListener(new ActionListener(){
 
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					try {
-												
-					} catch (Exception e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-				}
-			});
-			return modifierButton;	
-		}
-		
-		public JButton getBtnSearch()
-		{
-			if(btnRechercher == null)
-			{
-				btnRechercher = new JButton("Rechercher");
-				btnRechercher.addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent e)
-					{
-						List<String> listeString = new ArrayList<>();
-						listeString.add(txtRechercher.getText());
-						try {
-							ApplyController.getInstance().move("listClient", listeString);
-						} catch (DALException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-					}
-				});
-			}
-			return btnRechercher;
-		}
 		
 		
 		public JPanel upClient(Client client)
@@ -396,9 +216,9 @@ public class ClientController {
 			gbc.gridx = 0;
 			gbc.gridy = 0;
 			gbc.gridwidth = 1;
-			panelClient.add(getBtnSave(), gbc);
+			//panelClient.add(getBtnSave(false, client), gbc);
 			gbc.gridx = 1;
-			panelClient.add(getBtnCancel(), gbc);	
+			//panelClient.add(getBtnCancel(), gbc);	
 			
 			gbc.anchor = GridBagConstraints.LINE_START;
 			
@@ -447,24 +267,337 @@ public class ClientController {
 			panelClient.add(addFieldEmail(), gbc);
 			gbc.gridy = 10;
 			panelClient.add(addFieldRemarque(), gbc);		
+			if( client != null)
+			{
+				txtNom.setText(client.getNomClient());
+				txtPrenom.setText(client.getPrenomClient());
+				txtAdresse.setText(client.getAdresse1());
+				txtAdresse2.setText(client.getAdresse2());
+				txtCP.setText(client.getCodePostal());
+				txtVille.setText(client.getVille());
+				txtPhone.setText(client.getNumeroTel());
+				txtAssurance.setText(client.getAssurance());
+				txtEmail.setText(client.getEmail());
+				txtRemarque.setText(client.getRemarque());
+			}
+			return panelClient;
+		}
+		
+		public JPanel globalClient(Client client)
+		{
+			JPanel panelClient = new JPanel();
+			panelClient.setLayout(new GridBagLayout());
 			
-			txtNom.setText(client.getNomClient());
-			txtPrenom.setText(client.getPrenomClient());
-			txtAdresse.setText(client.getAdresse1());
-			txtAdresse2.setText(client.getAdresse2());
-			txtCP.setText(client.getCodePostal());
-			txtVille.setText(client.getVille());
-			txtPhone.setText(client.getNumeroTel());
-			txtAssurance.setText(client.getAssurance());
-			txtEmail.setText(client.getEmail());
-			txtRemarque.setText(client.getRemarque());
+			GridBagConstraints gbc = new GridBagConstraints();
+			
+			//Espace entre les cases
+			gbc.insets = new Insets(5, 5, 5, 5);
+			gbc.gridx = 0;
+			gbc.gridy = 0;
+			panelClient.add(MenuClient(client), gbc);
+			
+			gbc.gridx = 0;
+			gbc.gridy = 1;
+			gbc.weightx = 1;
+			gbc.anchor = GridBagConstraints.LINE_START;
+			panelClient.add(upClient(client), gbc);
 			
 			return panelClient;
 		}
 		
 		
+		public JPanel MenuClient(Client client)
+		{
+			JPanel menuClient = new JPanel();
+			menuClient.setLayout(new GridBagLayout());
+			
+			GridBagConstraints gbc = new GridBagConstraints();
+			
+			//Espace entre les cases
+			gbc.insets = new Insets(5, 30, 5, 5);
+			gbc.gridx = 0;
+			gbc.gridy = 0;
+			menuClient.add(addRoutingButton("chercheClient", "Rechercher", null), gbc);
+			gbc.gridx = 1;
+			menuClient.add(getBtnAjouter(), gbc);
+			gbc.gridx = 2;
+			menuClient.add(getBtnArchiver(client), gbc);
+			gbc.gridx = 3;
+			System.out.println(client);
+			menuClient.add(getBtnSave(false, client), gbc);
+			gbc.gridx = 4;
+			menuClient.add(addRoutingButton("globalClient", "Annuler", client), gbc);
+			
+			
+			return menuClient;
+		}
 		
 		
+	
+		
+		//----------------------------------------BTN-------------------------------------------------
 		
 		
+	public JButton addRoutingButton(String lien, String name, Client client){
+		JButton routingButton = new JButton(name);
+		routingButton.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				List<Client> listeClient = new ArrayList<>();
+				listeClient.add(client);
+				try {
+					ApplyController.getInstance().move(lien, listeClient);
+				} catch (DALException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		return routingButton;	
+	}
+	
+	
+	public JButton addModifierButton(Client client){
+		JButton modifierButton = new JButton("Ouvrir");
+		modifierButton.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				List<Client> listeClient = new ArrayList<>();
+				listeClient.add(client);
+				try {
+					ApplyController.getInstance().move("globalClient", listeClient);
+				} catch (DALException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		return modifierButton;	
+	}
+	
+	public JButton getBtnSearch()
+	{
+		if(btnRechercher == null)
+		{
+			btnRechercher = new JButton("Rechercher");
+			btnRechercher.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e)
+				{
+					List<String> listeString = new ArrayList<>();
+					listeString.add(txtRechercher.getText());
+					try {
+						ApplyController.getInstance().move("chercheClient", listeString);
+					} catch (DALException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			});
+		}
+		return btnRechercher;
+	}
+		
+	
+	public JButton getBtnSave(boolean newClient, Client upclient)
+	{
+		btnValider = new JButton("Valider");
+		btnValider.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				if(txtNom.getText().isEmpty() || txtPrenom.getText().isEmpty()  || txtAdresse.getText().isEmpty() || txtVille.getText().isEmpty() || txtCP.getText().isEmpty() || txtPhone.getText().isEmpty())
+				{
+					//ApplyController.getInstance().message("requiredFields");
+				}
+				else
+				{
+					try {
+						Client client = newClient();
+						ClientManager clientManager = ClientManager.getInstance();
+						if(newClient)
+						{
+							clientManager.addClient(client);
+						}
+						else
+						{
+							client.setCodeClient(upclient.getCodeClient());
+							clientManager.updateClient(client);
+						}
+						ApplyController.getInstance().move("chercheClient", new ArrayList());
+					} catch (DALException e1) {
+						e1.printStackTrace();
+					}
+				}
+			}
+		});
+
+		return btnValider;
+	}
+	
+	public JButton getBtnCancel()
+	{
+		if(btnAnnuler == null)
+		{
+			btnAnnuler = new JButton("Annuler");
+			btnAnnuler.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e)
+				{
+					try {
+						ApplyController.getInstance().move("chercheClient", new ArrayList());
+					} catch (DALException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			});
+		}
+		return btnAnnuler;
+	}
+	
+	public JButton getBtnAjouter()
+	{
+		if(btnAjouter == null)
+		{
+			btnAjouter = new JButton("Ajouter");
+			btnAjouter.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e)
+				{
+					try {
+						ApplyController.getInstance().move("chercheClient", new ArrayList());
+					} catch (DALException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			});
+		}
+		return btnAjouter;
+	}
+
+	
+	public JButton getBtnArchiver(Client client)
+	{
+			btnArchiver = new JButton("Archiver");
+			btnArchiver.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e)
+				{
+					if(client != null)
+					{
+						try {
+							client.setArchive(true);
+							ClientManager.getInstance().updateClient(client);
+							ApplyController.getInstance().move("globalClient", null);
+						} catch (DALException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+				}
+			});
+		return btnArchiver;
+	}
+				
+//------------------------------------TextField-------------------------------------------------------------
+				
+	private JTextField addFieldNom()
+	{
+		if (this.txtNom == null) {
+			this.txtNom = new JTextField(20);
+		}
+		return this.txtNom;
+	}
+	
+	private JTextField addFieldPrenom()
+	{
+		if (this.txtPrenom == null) {
+			this.txtPrenom = new JTextField(20);
+		}
+		return this.txtPrenom;
+	}
+	
+	private JTextField addFieldAdresse()
+	{
+		if (this.txtAdresse == null) {
+			this.txtAdresse = new JTextField(20);
+		}
+		return this.txtAdresse;
+	}
+	
+	private JTextField addFieldAdresse2()
+	{
+		if (this.txtAdresse2 == null) {
+			this.txtAdresse2 = new JTextField(20);
+		}
+		return this.txtAdresse2;
+	}
+	
+	private JTextField addFieldCP()
+	{
+		if (this.txtCP == null) {
+			this.txtCP = new JTextField(20);
+		}
+		return this.txtCP;
+	}
+	
+	private JTextField addFieldVille()
+	{
+		if (this.txtVille == null) {
+			this.txtVille = new JTextField(20);
+		}
+		return this.txtVille;
+	}
+	
+	private JTextField addFieldTelephone()
+	{
+		if (this.txtPhone == null) {
+			this.txtPhone = new JTextField(20);
+		}
+		return this.txtPhone;
+	}
+	
+	private JTextField addFieldAssurance()
+	{
+		if (this.txtAssurance == null) {
+			this.txtAssurance = new JTextField(20);
+		}
+		return this.txtAssurance;
+	}
+	
+	private JTextField addFieldEmail()
+	{
+		if (this.txtEmail == null) {
+			this.txtEmail = new JTextField(20);
+		}
+		return this.txtEmail;
+	}
+	
+	private JTextArea addFieldRemarque()
+	{
+		if (this.txtRemarque == null) {
+			this.txtRemarque = new JTextArea(8, 20);
+			this.txtRemarque.setLineWrap(true);
+			this.txtRemarque.setWrapStyleWord(true);
+		}
+		return this.txtRemarque;
+	}
+	
+	private JTextField addFieldRecherche()
+	{
+		if (this.txtRechercher == null) {
+			this.txtRechercher = new JTextField(20);
+		}
+		return this.txtRechercher;
+	}
+			
 }
