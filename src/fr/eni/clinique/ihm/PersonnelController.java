@@ -86,7 +86,7 @@ public class PersonnelController {
 		gbc.gridx = 0;
 		gbc.weightx = 1;
 		gbc.anchor = GridBagConstraints.LINE_START;
-		panelButtons.add(addButton(), gbc);
+		panelButtons.add(buttonNewPersonnel(), gbc);
 		gbc.gridx = 1;
 		gbc.anchor = GridBagConstraints.CENTER;
 		panelButtons.add(deleteButton(), gbc);
@@ -157,7 +157,7 @@ public class PersonnelController {
 		gbc.anchor = GridBagConstraints.LINE_END;
 		panelPersonnel.add(new JLabel(personnel.getRole()), gbc);
 
-		// Evenement généré au click de la souris sur un personnel
+		// Evènement généré au click de la souris sur un personnel
 		panelPersonnel.addMouseListener(new MouseListener() {
 
 			@Override
@@ -204,7 +204,7 @@ public class PersonnelController {
 	 * 
 	 * @return
 	 */
-	public JButton addButton() {
+	public JButton buttonNewPersonnel() {
 		JButton addButton = new JButton("Ajouter", new ImageIcon("images/ajouter.png"));
 		addButton.setVerticalTextPosition(AbstractButton.BOTTOM);
 		addButton.setHorizontalTextPosition(AbstractButton.CENTER);
@@ -215,7 +215,7 @@ public class PersonnelController {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				try {
-					// PersonnelMger.getInstance().addPersonnel(personnel);
+					ApplyController.getInstance().move("ajouterPersonnel", null);
 
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
@@ -247,6 +247,7 @@ public class PersonnelController {
 					if (identifiant != 0) {
 						Personnel personnel = DAOFactory.getPersonnelDAO().selectById(identifiant);
 						PersonnelMger.getInstance().updateIsArchive(personnel);
+						ApplyController.getInstance().move("listePersonnels", personnel);
 					}
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
@@ -268,6 +269,23 @@ public class PersonnelController {
 		resetButton.setVerticalTextPosition(AbstractButton.BOTTOM);
 		resetButton.setHorizontalTextPosition(AbstractButton.CENTER);
 		resetButton.setMnemonic(KeyEvent.VK_M);
+		resetButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				try {
+					if (identifiant != 0) {
+						Personnel personnel = DAOFactory.getPersonnelDAO().selectById(identifiant);
+						ApplyController.getInstance().move("changementMdp",personnel);
+					}
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+			}
+		});
 		return resetButton;
 	}
 

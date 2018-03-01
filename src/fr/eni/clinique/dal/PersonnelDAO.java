@@ -18,8 +18,6 @@ public Personnel selectById(int codePerso) throws DALException;
 	
 	public void delete(int codePerso) throws DALException;
 	
-	public void update(Personnel data) throws DALException;
-	
 	public void updateMotDePasse(Personnel data) throws DALException;
 	
 	public void updateIsArchive(Personnel data) throws DALException;

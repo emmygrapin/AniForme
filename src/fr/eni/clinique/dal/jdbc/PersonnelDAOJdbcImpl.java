@@ -246,10 +246,6 @@ public class PersonnelDAOJdbcImpl implements PersonnelDAO {
 		}
 	}
 
-	@Override
-	public void update(Personnel data) throws DALException {
-		// TODO Auto-generated method stub
-
-	}
+	
 
 }

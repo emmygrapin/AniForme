@@ -48,9 +48,10 @@ public class PersonnelMger {
 	}
 	
 	// Méthode pour ajouter une personne
-	public void addPersonnel(Personnel personnel){
+	public void addPersonnel(String nom, String motDePasse, String role){
 		try {
-			daoPersonnel.insert(personnel);
+			Personnel newPersonnel = new Personnel(0,nom, motDePasse, role, false);
+			daoPersonnel.insert(newPersonnel);
 		} catch (DALException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -58,8 +59,9 @@ public class PersonnelMger {
 	}
 	
 	// Méthode pour réinitialiser le mot de passe
-	public void resetMotDePasse(Personnel personnel){
+	public void resetMotDePasse(Personnel personnel, String nouveauMotDePasse){
 		try {
+			personnel.setMotDePasse(nouveauMotDePasse);
 			daoPersonnel.updateMotDePasse(personnel);
 		} catch (DALException e) {
 			// TODO Auto-generated catch block
