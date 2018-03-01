@@ -57,15 +57,15 @@ public class RaceDAOJdbcImpl implements RaceDAO {
 		try {
 			cnx = getConnection();
 			rqt = cnx.prepareStatement(sqlSelectById);
-			rqt.setString(1, codeRace);
-			rqt.setString(2, codeEspece);
-
+			rqt.setString(1, "%" + codeRace + "%" );
+			rqt.setString(2, "%" + codeEspece + "%");
+			System.out.println("race : " + codeRace + " espece : " + codeEspece);
 			rs = rqt.executeQuery();
 			if (rs.next()) {
 				
 				raceAnimal = new Race(rs.getString("Race"),  	   // String Race
 										 rs.getString("Espece"));  // String Espece
-										 
+				System.out.println("raceAnimal : " + raceAnimal);		 
 			}
 
 		} catch (SQLException e) {
@@ -80,7 +80,6 @@ public class RaceDAOJdbcImpl implements RaceDAO {
 				e.printStackTrace();
 			}
 			closeConnection();
-
 		}
 		return raceAnimal;
 	}

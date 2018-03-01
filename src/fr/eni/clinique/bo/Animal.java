@@ -23,6 +23,18 @@ public class Animal {
 		
 	}
 	
+	public Animal(String nomAnimal, String sexe, String couleur, Race race,
+			Client client, String tatouage, String antecedents, Boolean archive ) {
+		super();
+		setNomAnimal(nomAnimal);
+		setSexe(sexe);
+		setCouleur(couleur);
+		setRace(race);
+		setClient(client);
+		setTatouage(tatouage);
+		setAntecedents(antecedents);
+		setArchive(archive);
+	}
 
 	public Animal(int codeAnimal, String nomAnimal, String sexe, String couleur, Race race,
 			Client client, String tatouage, String antecedents, boolean archive) {
@@ -55,11 +67,23 @@ public class Animal {
 	}
 
 	public String getSexe() {
+		
 		return sexe;
 	}
 
 	public void setSexe(String sexe) {
-		this.sexe = sexe;
+		if (sexe != null) {
+			if (sexe.equals("M")) { 
+				this.sexe = sexe;
+			} else if (sexe.equals("F")) {
+				this.sexe = sexe;			
+			} else if (sexe.equals("H")){
+				this.sexe = sexe;
+			} else {
+				this.sexe = "H";
+			}
+		}
+		
 	}
 
 	public String getCouleur() {
@@ -75,7 +99,6 @@ public class Animal {
 	}
 
 	public void setRace(Race race) {
-		
 		
 			this.race = race;
 	
