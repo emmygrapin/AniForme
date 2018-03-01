@@ -3,6 +3,7 @@ package fr.eni.clinique.bll;
 import java.util.List;
 
 import fr.eni.clinique.bo.Animal;
+import fr.eni.clinique.bo.Race;
 import fr.eni.clinique.dal.AnimalDAO;
 import fr.eni.clinique.dal.DALException;
 import fr.eni.clinique.dal.DAOFactory;
@@ -49,5 +50,11 @@ public class AnimalManager {
 	public void removeAnimal(Animal animal) throws DALException {
 		
 		 daoAnimal.delete(animal.getCodeAnimal());
+	}
+	
+	public List<Animal> getEspeceByAnimal(Animal animal) throws DALException {
+		
+		String espece = animal.getRace().getEspece();
+		return daoAnimal.selectByEspece(espece);
 	}
 }

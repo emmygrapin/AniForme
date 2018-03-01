@@ -39,4 +39,18 @@ public class RaceManager {
 
 		return daoRace.selectById(race, espece);
 	}
+	
+	public List<Race> getEspeces() throws DALException {
+
+		return daoRace.selectEspeces();
+	}
+
+	public Race getEspece(String race, String espece) throws DALException {
+
+		return daoRace.selectById(race, espece);
+	}
+	
+	public List<Race> getRacesByEspece(String espece) throws DALException {
+		return daoRace.selectRacesByEspece(espece);
+	}
 }

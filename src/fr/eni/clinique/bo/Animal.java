@@ -73,12 +73,12 @@ public class Animal {
 
 	public void setSexe(String sexe) {
 		if (sexe != null) {
-			if (sexe.equals("M")) { 
-				this.sexe = sexe;
-			} else if (sexe.equals("F")) {
-				this.sexe = sexe;			
-			} else if (sexe.equals("H")){
-				this.sexe = sexe;
+			if (sexe.equals("Mâle")) { 
+				this.sexe = "M";
+			} else if (sexe.equals("Femelle")) {
+				this.sexe = "F";			
+			} else if (sexe.equals("Hermaphrodite")){
+				this.sexe = "H";
 			} else {
 				this.sexe = "H";
 			}
@@ -133,6 +133,8 @@ public class Animal {
 	}
 
 	public void setArchive(boolean archive) {
+		
+		
 		this.archive = archive;
 	}
 
