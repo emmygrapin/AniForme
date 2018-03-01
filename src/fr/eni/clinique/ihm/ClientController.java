@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -60,9 +61,9 @@ public class ClientController {
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.gridwidth = 1;
-		//panelClient.add(getBtnSave(true, null), gbc);
+		panelClient.add(getBtnSave(true, null), gbc);
 		gbc.gridx = 1;
-		//panelClient.add(getBtnCancel(), gbc);	
+		panelClient.add(getBtnCancel(), gbc);	
 		
 		gbc.anchor = GridBagConstraints.LINE_START;
 		
@@ -319,7 +320,7 @@ public class ClientController {
 			gbc.gridy = 0;
 			menuClient.add(addRoutingButton("chercheClient", "Rechercher", null), gbc);
 			gbc.gridx = 1;
-			menuClient.add(getBtnAjouter(), gbc);
+			menuClient.add(addRoutingButton("addClient", "Ajouter", null), gbc);
 			gbc.gridx = 2;
 			menuClient.add(getBtnArchiver(client), gbc);
 			gbc.gridx = 3;
@@ -450,7 +451,7 @@ public class ClientController {
 				public void actionPerformed(ActionEvent e)
 				{
 					try {
-						ApplyController.getInstance().move("chercheClient", new ArrayList());
+						ApplyController.getInstance().move("globalClient", new ArrayList());
 					} catch (DALException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -486,7 +487,7 @@ public class ClientController {
 	
 	public JButton getBtnArchiver(Client client)
 	{
-			btnArchiver = new JButton("Archiver");
+			btnArchiver = new JButton("Supprimer");
 			btnArchiver.addActionListener(new ActionListener() {
 				
 				@Override
@@ -494,14 +495,21 @@ public class ClientController {
 				{
 					if(client != null)
 					{
-						try {
-							client.setArchive(true);
-							ClientManager.getInstance().updateClient(client);
-							ApplyController.getInstance().move("globalClient", null);
-						} catch (DALException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
+						 JOptionPane jop = new JOptionPane();    	
+					      int option = jop.showConfirmDialog(null, "Voulez-vous supprimer ce client ?", "Client supprimé.", 
+					        JOptionPane.YES_NO_OPTION, 
+					        JOptionPane.QUESTION_MESSAGE);
+
+					      if(option == JOptionPane.OK_OPTION){
+					    		try {
+									client.setArchive(true);
+									ClientManager.getInstance().updateClient(client);
+									ApplyController.getInstance().move("chercheClient", new ArrayList());
+								} catch (DALException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}    	
+					      }
 					}
 				}
 			});
