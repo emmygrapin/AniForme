@@ -1,4 +1,4 @@
-package fr.eni.clinique.ihm;
+package fr.eni.clinique.ihm.ecranPersonnel;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import fr.eni.clinique.bll.PersonnelMger;
 import fr.eni.clinique.bo.Personnel;
 import fr.eni.clinique.dal.DAOFactory;
+import fr.eni.clinique.ihm.ApplyController;
 /**
  * 
  * @author egrapin2017
