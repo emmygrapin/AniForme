@@ -23,7 +23,8 @@ public class RaceDAOJdbcImpl implements RaceDAO {
 	private static final String sqlInsert = "insert into Races(Race, Espece) values(?,?)";
 	private static final String sqlUpdate = "update Races set Espece=? where Race=? and Espece=?";
 	private static final String sqlDelete = "delete from Races where Race=? and Espece=?";
-	private static final String sqlSelectByEspece = "select Race, Espece from Races where Espece like ?";
+	private static final String sqlSelectOfEspeces = "select DISTINCT(Espece) from Races group by  Espece";
+	private static final String sqlSelectRacesByEspece = "select Race, Espece from Races where Espece like ?";
 
 	private Connection connection;
 
@@ -57,15 +58,13 @@ public class RaceDAOJdbcImpl implements RaceDAO {
 		try {
 			cnx = getConnection();
 			rqt = cnx.prepareStatement(sqlSelectById);
-			rqt.setString(1, codeRace);
-			rqt.setString(2, codeEspece);
-
+			rqt.setString(1, "%" + codeRace + "%" );
+			rqt.setString(2, "%" + codeEspece + "%");
 			rs = rqt.executeQuery();
 			if (rs.next()) {
 				
 				raceAnimal = new Race(rs.getString("Race"),  	   // String Race
-										 rs.getString("Espece"));  // String Espece
-										 
+										 rs.getString("Espece"));  // String Espece		 
 			}
 
 		} catch (SQLException e) {
@@ -80,7 +79,6 @@ public class RaceDAOJdbcImpl implements RaceDAO {
 				e.printStackTrace();
 			}
 			closeConnection();
-
 		}
 		return raceAnimal;
 	}
@@ -209,5 +207,83 @@ public class RaceDAOJdbcImpl implements RaceDAO {
 		}
 		
 	}
+
+	@Override
+	public List<Race> selectEspeces() throws DALException {
+		Connection cnx = null;
+		Statement rqt = null;
+		ResultSet rs = null;
+		List<Race> liste = new ArrayList<Race>();
+		try {
+			cnx = getConnection();
+			rqt = cnx.createStatement();
+			rs = rqt.executeQuery(sqlSelectOfEspeces);
+			Race raceAnimal = null;
+			
+			while (rs.next()) {
+				
+				raceAnimal = new Race(null,    // String Race    
+						rs.getString("Espece"));               // String Espece
+				
+				liste.add(raceAnimal);
+			}
+		} catch (SQLException e) {
+			throw new DALException("selectAll failed - ", e);
+		} finally {
+			try {
+				
+				if (rqt != null) {
+					rqt.close();
+				}
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			closeConnection();
+		}
+		return liste;
+	}
+	
+	@Override
+	public List<Race> selectRacesByEspece(String espece) throws DALException {
+		Connection cnx = null;
+		PreparedStatement rqt = null;
+		ResultSet rs = null;
+		List<Race> liste = new ArrayList<Race>();
+		
+		try {
+			cnx = getConnection();
+			rqt = cnx.prepareStatement(sqlSelectRacesByEspece);
+			rqt.setString(1, "%" + espece + "%" );
+			rs = rqt.executeQuery();
+			Race raceAnimal = null;
+			
+			while (rs.next()) {
+				
+				raceAnimal = new Race(rs.getString("Race"),    // String Race    
+						rs.getString("Espece"));               // String Espece
+
+				liste.add(raceAnimal);
+			}
+
+		} catch (SQLException e) {
+			throw new DALException("selectAll failed - " + espece, e);
+		} finally {
+			try {
+				
+				if (rqt != null) {
+					rqt.close();
+				}
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			closeConnection();
+		}
+		return liste;
+	}
+
 
 }

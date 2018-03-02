@@ -44,6 +44,12 @@ public class ClientManager {
 		
 	}
 	
+	public void updateClient(Client client) throws DALException 
+	{
+		daoClient.update(client);
+		
+	}
+	
 	public void removeClient(Client client) throws DALException
 	{
 		daoClient.delete(client.getCodeClient());

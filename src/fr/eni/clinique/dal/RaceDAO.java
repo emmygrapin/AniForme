@@ -20,5 +20,9 @@ public interface RaceDAO {
 	public void update(Race data) throws DALException;
 	
 	public void delete(String codeRace, String codeEspece)throws DALException;
+	
+	public List<Race> selectEspeces() throws DALException;
+	
+	public List<Race> selectRacesByEspece(String espece) throws DALException;
 
 }
