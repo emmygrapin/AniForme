@@ -14,6 +14,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -23,7 +24,7 @@ import fr.eni.clinique.dal.DALException;
 import fr.eni.clinique.dal.DAOFactory;
 import fr.eni.clinique.ihm.ApplyController;
 
-public class PersonnelGestion extends JFrame{
+public class PersonnelGestion extends JInternalFrame{
 
 	private int identifiant;
 	private JPanel selectPersonnel;
@@ -32,17 +33,20 @@ public class PersonnelGestion extends JFrame{
 
 	public PersonnelGestion() throws DALException{
 		
-		this.setTitle("Gestion du personnel");
-		PersonnelController personnelController = PersonnelController.getinstance();
+		super("Gestion du personnel", true, true, true,true);
+		
+		//PersonnelController personnelController = PersonnelController.getinstance();
 		// Réglage de la taille du conteneur
 		this.setSize(900, 800);
 		
 		// Réglage de la position du conteneur
-		this.setLocationRelativeTo(null);
+		//this.setLocationRelativeTo(null);
 	
 		this.setContentPane(viewGestionPersonnels());
-		// Fermeture de l'application JAVA lorsque on clique sur la croix
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// Cache l'application lorsque on clique sur la croix
+		this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		
+		
 		
 		// J'affiche la fenêtre
 		//this.setVisible(true);
