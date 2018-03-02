@@ -19,14 +19,14 @@ public class Personnel {
 		this.codePerso = codePerso;
 		this.nom = nom;
 		this.motDePasse = motDePasse;
-		this.role = role;
+		this.setRole(role);
 		this.archive = archive;
 	}
 
 	public Personnel(String nom, String motDePasse, String role, boolean archive) {
 		this.nom = nom;
 		this.motDePasse = motDePasse;
-		this.role = role;
+		this.setRole(role);
 		this.archive = archive;
 	}
 	public int getCodePerso() {
@@ -58,7 +58,17 @@ public class Personnel {
 	}
 
 	public void setRole(String role) {
-		this.role = role;
+		if (role != null) {
+			if (role.equals("Vétérinaire")) { 
+				this.role = "VET";
+			} else if (role.equals("Administrateur")) {
+				this.role = "ADM";			
+			} else if (role.equals("Secrétaire")){
+				this.role = "SEC";
+			} else {
+				this.role = "ADM";
+			}
+		}
 	}
 
 	public boolean isArchive() {
