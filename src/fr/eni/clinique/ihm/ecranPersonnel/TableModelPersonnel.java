@@ -1,10 +1,15 @@
 package fr.eni.clinique.ihm.ecranPersonnel;
 
+
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
+
+import com.sun.rowset.internal.Row;
 
 import fr.eni.clinique.bo.Personnel;
+
 
 /**
  * méthode override permettent de gérer méthodes affichées
@@ -13,12 +18,31 @@ import fr.eni.clinique.bo.Personnel;
  *
  */
 public class TableModelPersonnel extends AbstractTableModel{
-
-	private List<Personnel> listePersonnels ;
+	private String column_names[]= {"Nom","Rôle","Mot de passe"};
+	private List<Personnel> listePersonnels;
+	private Personnel personnel;
+	private Row ligne;
 	
+	public TableModelPersonnel(){
+	
+	}
+	
+	public void setListePersonnels(List<Personnel> listePersonnels) {
+		this.listePersonnels = listePersonnels;
+		fireTableDataChanged();
+	}
 	public TableModelPersonnel(List<Personnel> listePersonnels ) {
 		this.listePersonnels = listePersonnels;
 	}
+	public Personnel selectPersonnel(int rowIndex){
+		personnel = listePersonnels.get(rowIndex);
+		return personnel;
+		
+	}
+	
+	 public String getColumnName(int column) {
+	        return column_names[column];
+	    }
 	/**
 	 * Combien de colonnes vont etre affichées dans le tableau
 	 */
@@ -27,7 +51,7 @@ public class TableModelPersonnel extends AbstractTableModel{
 		// TODO Auto-generated method stub
 		return 3;
 	}
-
+	
 	/**
 	 * le nombre de lignes du tableau
 	 * @return taille
@@ -37,7 +61,8 @@ public class TableModelPersonnel extends AbstractTableModel{
 		// TODO Auto-generated method stub
 		return listePersonnels.size();
 	}
-
+	
+	
 	/**
 	 * Appelé une fois pour l'affichage des cellules
 	 */
@@ -54,7 +79,8 @@ public class TableModelPersonnel extends AbstractTableModel{
 			ret = listePersonnels.get(rowIndex).getRole();
 			break;
 		case 2:
-			ret = listePersonnels.get(rowIndex).getMotDePasse();
+			String motDePasse = "**********";
+			ret = motDePasse;
 			break;
 			
 		default:
@@ -63,6 +89,6 @@ public class TableModelPersonnel extends AbstractTableModel{
 		return  ret;
 	}
 	
-	
+
 
 }

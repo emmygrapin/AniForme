@@ -8,13 +8,13 @@ package fr.eni.clinique.bo;
  *
  */
 public class Personnel {
-	
+
 	private int codePerso;
 	private String nom;
 	private String motDePasse;
 	private String role;
 	private boolean archive;
-	
+
 	public Personnel(int codePerso, String nom, String motDePasse, String role, boolean archive) {
 		this.codePerso = codePerso;
 		this.nom = nom;
@@ -29,6 +29,7 @@ public class Personnel {
 		this.setRole(role);
 		this.archive = archive;
 	}
+
 	public int getCodePerso() {
 		return codePerso;
 	}
@@ -59,16 +60,17 @@ public class Personnel {
 
 	public void setRole(String role) {
 		if (role != null) {
-			if (role.equals("Vétérinaire")) { 
+			if (role.equals("Vétérinaire")) {
 				this.role = "VET";
 			} else if (role.equals("Administrateur")) {
-				this.role = "ADM";			
-			} else if (role.equals("Secrétaire")){
+				this.role = "ADM";
+			} else if (role.equals("Secrétaire")) {
 				this.role = "SEC";
 			} else {
 				this.role = "ADM";
 			}
 		}
+
 	}
 
 	public boolean isArchive() {
@@ -84,6 +86,5 @@ public class Personnel {
 		return "Personnels [codePerso=" + codePerso + ", nom=" + nom + ", motDePasse=" + motDePasse + ", role=" + role
 				+ ", archive=" + archive + "]";
 	}
-	
 
 }

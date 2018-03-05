@@ -57,7 +57,7 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 				EcranPrincipalClinique ecran = new EcranPrincipalClinique();
 				//TODO dialog authentification
 				login loginEcran = new login(ecran);
-				//TODO setVisible ici
+//				//TODO setVisible ici
 				ecran.setVisible(true);
 			}
 		});
@@ -131,7 +131,7 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 	public PersonnelGestion getEcranPersonnelGestion() {
 		if(ecranPersonnelGest == null){
 			try {
-				ecranPersonnelGest  = new PersonnelGestion();
+				ecranPersonnelGest  = new PersonnelGestion(this);
 			} catch (DALException e) {
 				// TODO Auto-generated catch block "echec affichage écran"
 				e.printStackTrace();

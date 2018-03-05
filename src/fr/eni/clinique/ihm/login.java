@@ -10,10 +10,12 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import fr.eni.clinique.bll.BLLException;
 import fr.eni.clinique.bll.LoginMger;
 
 /**
@@ -25,16 +27,12 @@ public class login extends JDialog{
 	
 	private JTextField txtNom, txtMotDePasse;
 	private JButton buttonValider;
-	
-	//TODO A supprimer
-	//JDialog boiteDialog = new JDialog(this,"Authentification", false);
+	private JOptionPane alert;
 	
 	// JDialog modal avec JFrame en parent paramètre + super
 	public login(JFrame parent){
 		super(parent, true);
 	
-		
-	//AuthentifierController authentifierController = AuthentifierController.getInstance();
 	this.setTitle("Authentification");
 	this.setContentPane(viewAuthentification());
 	this.setSize(500, 200);
@@ -94,11 +92,9 @@ public class login extends JDialog{
 					LoginMger.getInstance().getConnexion(identifiantSaisi, motDePasseSaisi);
 					login.this.setVisible(false);
 					
-					
-					
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				} catch (BLLException e1) {
+					alert.showMessageDialog(null, e1.getMessage(), "Erreur",
+							JOptionPane.ERROR_MESSAGE);
 				}
 
 			}

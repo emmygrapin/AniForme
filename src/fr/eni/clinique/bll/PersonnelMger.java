@@ -2,6 +2,9 @@ package fr.eni.clinique.bll;
 
 import java.util.List;
 
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+
 import fr.eni.clinique.bo.Personnel;
 import fr.eni.clinique.dal.DALException;
 import fr.eni.clinique.dal.DAOFactory;
@@ -10,7 +13,9 @@ import fr.eni.clinique.dal.PersonnelDAO;
 public class PersonnelMger {
 	private PersonnelDAO daoPersonnel;
 	private static PersonnelMger _instance;
-	
+	private JOptionPane alert = new JOptionPane();
+	private DALException error;
+
 	// constructeur appel DAOPersonnel et ses méthodes
 	private PersonnelMger(){
 		 daoPersonnel = DAOFactory.getPersonnelDAO();
@@ -48,14 +53,10 @@ public class PersonnelMger {
 	}
 	
 	// Méthode pour ajouter une personne
-	public void addPersonnel(String nom, String motDePasse, String role){
-		try {
+	public void addPersonnel(String nom, String motDePasse, String role)throws DALException{	
 			Personnel newPersonnel = new Personnel(0,nom, motDePasse, role, false);
 			daoPersonnel.insert(newPersonnel);
-		} catch (DALException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 	}
 	
 	// Méthode pour réinitialiser le mot de passe

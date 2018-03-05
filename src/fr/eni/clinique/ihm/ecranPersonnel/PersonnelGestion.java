@@ -8,6 +8,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.List;
 
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
@@ -15,6 +16,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -24,44 +26,45 @@ import fr.eni.clinique.dal.DALException;
 import fr.eni.clinique.dal.DAOFactory;
 import fr.eni.clinique.ihm.ApplyController;
 
-public class PersonnelGestion extends JInternalFrame{
+public class PersonnelGestion extends JInternalFrame {
 
-	private int identifiant;
-	private JPanel selectPersonnel;
+	private JPanel selectPersonnel, panelGestionPersonnels;
 	private TablePersonnel tablePersonnel;
-	
+	private JButton buttonNewPersonnel;
+	private NewPersonnelDialog newPersonnelDialog;
+	private JFrame parent;
+	private static JOptionPane alert;
 
-	public PersonnelGestion() throws DALException{
-		
-		super("Gestion du personnel", true, true, true,true);
-		
-		//PersonnelController personnelController = PersonnelController.getinstance();
+	public PersonnelGestion(JFrame parent) throws DALException {
+
+		super("Gestion du personnel", true, true, true, true);
+		this.parent = parent;
+
+		// PersonnelController personnelController =
+		// PersonnelController.getinstance();
 		// Réglage de la taille du conteneur
 		this.setSize(900, 800);
-		
+
 		// Réglage de la position du conteneur
-		//this.setLocationRelativeTo(null);
-	
+		// this.setLocationRelativeTo(null);
+
 		this.setContentPane(viewGestionPersonnels());
 		// Cache l'application lorsque on clique sur la croix
 		this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		
-		
-		
+
 		// J'affiche la fenêtre
-		//this.setVisible(true);
-		
-		
-		
+		// this.setVisible(true);
+
 	}
-	
+
 	/**
-	 *  panel Global de Gestion du personnel contient le panel des boutons et le panel
-	 *  des personnes
+	 * panel Global de Gestion du personnel contient le panel des boutons et le
+	 * panel des personnes
+	 * 
 	 * @return
 	 */
 	public JPanel viewGestionPersonnels() {
-		JPanel panelGestionPersonnels = new JPanel();
+		panelGestionPersonnels = new JPanel();
 
 		panelGestionPersonnels.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -80,6 +83,7 @@ public class PersonnelGestion extends JInternalFrame{
 
 	/**
 	 * panel des boutons
+	 * 
 	 * @return
 	 */
 	public JPanel addViewButtons() {
@@ -107,110 +111,6 @@ public class PersonnelGestion extends JInternalFrame{
 		return panelButtons;
 	}
 
-	
-	
-//	/**
-//	 * Panel contenant des panels unitaires de personnes
-//	 * 
-//	 * @return
-//	 */
-//	public JPanel addViewPersonnels() {
-//		PersonnelMger personnelMger = PersonnelMger.getInstance();
-//
-//		List<Personnel> personnels = personnelMger.getPersonnels();
-//
-//		JPanel panelPersonnels = new JPanel();
-//		panelPersonnels.setLayout(new GridBagLayout());
-//		panelPersonnels.setBorder(BorderFactory.createLineBorder(Color.black));
-//		GridBagConstraints gbc = new GridBagConstraints();
-//
-//		// Espace entre les cases
-//		gbc.insets = new Insets(5, 5, 5, 5);
-//		gbc.gridx = 0;
-//		int y = 1;
-//
-//		for (Personnel personnel : personnels) {
-//			gbc.gridy = y;
-//			panelPersonnels.add(addViewUnPersonnel(personnel), gbc);
-//			y++;
-//		}
-//		return panelPersonnels;
-//	}
-//
-//	/**
-//	 * panel unitaire affichant un personnel
-//	 * 
-//	 * @param personnel
-//	 * @return
-//	 */
-//	public JPanel addViewUnPersonnel(Personnel personnel) {
-//		JPanel panelPersonnel = new JPanel();
-//		Dimension dimension = new Dimension(500, 50);
-//		panelPersonnel.setPreferredSize(dimension);
-//		panelPersonnel.setLayout(new GridBagLayout());
-//
-//		GridBagConstraints gbc = new GridBagConstraints();
-//
-//		// Espace entre les cases
-//		gbc.insets = new Insets(5, 5, 5, 5);
-//
-//		// Ligne 1
-//		gbc.gridy = 0;
-//		gbc.gridx = 0;
-//		gbc.weightx = 1;
-//		gbc.anchor = GridBagConstraints.LINE_START;
-//		panelPersonnel.add(new JLabel(personnel.getNom()), gbc);
-//
-//		gbc.gridx = 1;
-//		gbc.anchor = GridBagConstraints.CENTER;
-//		panelPersonnel.add(new JLabel("************"), gbc);
-//
-//		gbc.gridx = 2;
-//		gbc.anchor = GridBagConstraints.LINE_END;
-//		panelPersonnel.add(new JLabel(personnel.getRole()), gbc);
-//
-//		// Evènement généré au click de la souris sur un personnel
-//		panelPersonnel.addMouseListener(new MouseListener() {
-//
-//			@Override
-//			public void mouseClicked(MouseEvent e) {
-//
-//				if (selectPersonnel != null) {
-//					selectPersonnel.setBorder(BorderFactory.createEmptyBorder());
-//				}
-//				identifiant = personnel.getCodePerso();
-//				panelPersonnel.setBorder(BorderFactory.createLineBorder(Color.gray));
-//				selectPersonnel = panelPersonnel;
-//			}
-//
-//			@Override
-//			public void mouseEntered(MouseEvent e) {
-//				// TODO Auto-generated method stub
-//
-//			}
-//
-//			@Override
-//			public void mouseExited(MouseEvent e) {
-//				// TODO Auto-generated method stub
-//
-//			}
-//
-//			@Override
-//			public void mousePressed(MouseEvent e) {
-//				// TODO Auto-generated method stub
-//
-//			}
-//
-//			@Override
-//			public void mouseReleased(MouseEvent e) {
-//				// TODO Auto-generated method stub
-//
-//			}
-//
-//		});
-//		return panelPersonnel;
-//	}
-
 	/**
 	 * Bouton d'ajout d'un personnel
 	 * 
@@ -227,7 +127,8 @@ public class PersonnelGestion extends JInternalFrame{
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				try {
-					ApplyController.getInstance().move("ajouterPersonnel", null);
+					newPersonnelDialog = new NewPersonnelDialog(parent);
+					refreshTablePersonnels();
 
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
@@ -256,15 +157,24 @@ public class PersonnelGestion extends JInternalFrame{
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				try {
-					if (identifiant != 0) {
-						Personnel personnel = DAOFactory.getPersonnelDAO().selectById(identifiant);
-						PersonnelMger.getInstance().updateIsArchive(personnel);
-						//TODO décommenter move()
-						//ApplyController.getInstance().move("listePersonnels", personnel);
+					if (tablePersonnel.getPersonnelSelect() != null) {
+						int option = alert.showConfirmDialog(null,
+								"Etes-vous sûr(e) de vouloir archiver cet utilisateur?", "Confirmation",
+								JOptionPane.YES_NO_OPTION);
+						if (option == JOptionPane.OK_OPTION) {
+							int identifiant = tablePersonnel.getPersonnelSelect().getCodePerso();
+							Personnel personnel = DAOFactory.getPersonnelDAO().selectById(identifiant);
+							PersonnelMger.getInstance().updateIsArchive(personnel);
+							alert.showMessageDialog(null, "L'utilisateur a bien été archivé", "Information",
+									JOptionPane.INFORMATION_MESSAGE);
+							refreshTablePersonnels();
+							tablePersonnel.setPersonnelSelect(null);
+						}
+						tablePersonnel.setPersonnelSelect(null);
 					}
 				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					alert.showMessageDialog(null, "L'utilisateur n'a pas été correctement archivé", "Erreur",
+							JOptionPane.ERROR_MESSAGE);
 				}
 
 			}
@@ -288,14 +198,19 @@ public class PersonnelGestion extends JInternalFrame{
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				try {
-					if (identifiant != 0) {
+					if (tablePersonnel.getPersonnelSelect() != null) {
+						int identifiant = tablePersonnel.getPersonnelSelect().getCodePerso();
 						Personnel personnel = DAOFactory.getPersonnelDAO().selectById(identifiant);
-						//TODO décommenter move()
-						//ApplyController.getInstance().move("changementMdp",personnel);
+						new ResetMotDePasseDialog(personnel, parent);
+						alert.showMessageDialog(null, "Le mot de passe a bien été réinitialisé", "Information",
+								JOptionPane.INFORMATION_MESSAGE);
+						refreshTablePersonnels();
+						tablePersonnel.setPersonnelSelect(null);
+
 					}
 				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					alert.showMessageDialog(null, "Le mot de passe n'a pas été correctement réinitialisé", "Erreur",
+							JOptionPane.ERROR_MESSAGE);
 				}
 
 			}
@@ -304,14 +219,25 @@ public class PersonnelGestion extends JInternalFrame{
 	}
 
 	public TablePersonnel getTablePersonnel() {
-		
+
 		if (tablePersonnel == null) {
-			
+
 			this.tablePersonnel = new TablePersonnel();
 			tablePersonnel.setFillsViewportHeight(true);
 			tablePersonnel.setPreferredScrollableViewportSize(new Dimension(500, 200));
-			
+
 		}
 		return tablePersonnel;
+	}
+
+	public NewPersonnelDialog getNewPersonnelDialog() {
+		return newPersonnelDialog;
+	}
+
+	public void refreshTablePersonnels() {
+		PersonnelMger personnelManager = PersonnelMger.getInstance();
+		List<Personnel> listePersonnels = personnelManager.getPersonnels();
+		getTablePersonnel().getTableModPersonnel().setListePersonnels(listePersonnels);
+		;
 	}
 }
