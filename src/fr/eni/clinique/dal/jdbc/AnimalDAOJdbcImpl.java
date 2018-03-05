@@ -10,6 +10,8 @@ import java.util.List;
 
 import fr.eni.clinique.JdbcTools;
 import fr.eni.clinique.bo.Animal;
+import fr.eni.clinique.bo.Client;
+import fr.eni.clinique.bo.Personnel;
 import fr.eni.clinique.bo.Race;
 import fr.eni.clinique.dal.AnimalDAO;
 import fr.eni.clinique.dal.ClientDAO;
@@ -26,14 +28,17 @@ public class AnimalDAOJdbcImpl implements AnimalDAO{
 													
 	private static final String sqlSelectById = "select CodeAnimal, NomAnimal, Sexe, Couleur, Races.Race,Races.Espece, CodeClient, Tatouage, Antecedents, Archive  "
 			+ " from Animaux join Races on Animaux.Race = Races.Race where CodeAnimal like ?";
-	private static final String sqlSelectAll = "select CodeAnimal, NomAnimal, Sexe, Couleur, Races.Race, Races.Espece, CodeClient, Tatouage, Antecedents, Archive from Animaux join Races on Races.Race = Animaux.Race";
+	private static final String sqlSelectAll = "select CodeAnimal, NomAnimal, Sexe, Couleur, Races.Race, Races.Espece, CodeClient, Tatouage, Antecedents, Archive from Animaux join Races on Races.Race = Animaux.Race where Archive=0";
 	private static final String sqlInsert = "insert into Animaux(NomAnimal, Sexe, Couleur, Race, Espece, CodeClient, Tatouage, Antecedents, Archive) values(?,?,?,?,?,?,?,?,?)";
 	private static final String sqlUpdate = "update Animaux set NomAnimal=?, Sexe=?, Couleur=?,Race=?,Espece=?, CodeClient=?, Tatouage=?, Antecedents=?, Archive=? where CodeAnimal=?";
-	private static final String sqlDelete = "delete from Animaux where CodeAnimal=?";
+	private static final String sqlUpdateArchive = "update Animaux set Archive=? where CodeAnimal = ?";
 	private static final String sqlSelectByRace = "select CodeAnimal, NomAnimal, Sexe, Couleur, Race, Espece, CodeClient, Tatouage, Antecedents, Archive "
 			+ "from Animaux where Race like ?";
 	private static final String sqlSelectByEspece = "select CodeAnimal, NomAnimal, Sexe, Couleur, Race, Espece, CodeClient, Tatouage, Antecedents, Archive "
 			+"from Animaux where Espece like ?";
+	private static final String sqlSelectByClient = "select CodeAnimal, NomAnimal, Sexe, Couleur, Race, Espece, CodeClient, Tatouage, Antecedents, Archive "
+			+ "from Animaux where CodeClient like ?";
+	
 	private Connection connection;
 	
 	public Connection getConnection() throws SQLException 
@@ -236,33 +241,48 @@ public class AnimalDAOJdbcImpl implements AnimalDAO{
 
 		
 	}
-
+	/**
+	 * Méthode qui update le champs "IsArchive" de Animal en bdd
+	 */
 	@Override
-	public void delete(int codeAnimal) throws DALException {
+	public void updateIsArchive(Animal data) throws DALException {
 		
 		Connection cnx = null;
 		PreparedStatement rqt = null;
 		try {
 			cnx = getConnection();
+			rqt = cnx.prepareStatement(sqlUpdateArchive, Statement.RETURN_GENERATED_KEYS);
+			rqt.setBoolean(1, data.isArchive());
+			rqt.setInt(2, data.getCodeAnimal());
 			
-			rqt = cnx.prepareStatement(sqlDelete);
-			rqt.setInt(1, codeAnimal);
-			rqt.executeUpdate();
+			int nbRows = rqt.executeUpdate();
+			
+			if (nbRows == 1) {
+				ResultSet rs = rqt.getGeneratedKeys();
+				if (rs.next()) {
+					data.setCodeAnimal(rs.getInt(1));
+					
+				}
+			}
+			System.out.println("uIA archivé ? => " + data.isArchive() );
+
 		} catch (SQLException e) {
-			throw new DALException("Delete article failed - id=" + codeAnimal, e);
+			throw new DALException("Archive failed ", e);
 		} finally {
 			try {
 				if (rqt != null) {
 					rqt.close();
 				}
 			} catch (SQLException e) {
-				throw new DALException("close failed ", e);
+				e.printStackTrace();
 			}
 			closeConnection();
 
 		}
+
 		
 	}
+
 
 	@Override
 	public List<Animal> selectByRace(String race) throws DALException {
@@ -347,6 +367,53 @@ public class AnimalDAOJdbcImpl implements AnimalDAO{
 
 		} catch (SQLException e) {
 			throw new DALException("selectByRace failed - id = " + espece, e);
+		} finally {
+			try {
+				
+				if (rqt != null) {
+					rqt.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			closeConnection();
+		}
+		return liste;
+	}
+
+	@Override
+	public List<Animal> selectByClient(int codeClient) throws DALException {
+		Connection cnx = null;
+		PreparedStatement rqt = null;
+		ResultSet rs = null;
+		List<Animal> liste = new ArrayList<>();
+		
+		try {
+			cnx = getConnection();
+			rqt = cnx.prepareStatement(sqlSelectByClient);
+			Animal animal = null;
+			RaceDAO raceDAO = DAOFactory.getRaceDAO();
+			ClientDAO clientDAO = DAOFactory.getClientDAO();
+			rqt.setInt(1, codeClient);
+
+			rs = rqt.executeQuery();
+			while (rs.next()) {
+				
+				animal = new Animal(rs.getInt("CodeAnimal"),  	       		            // int codeAnimal
+						 rs.getString("NomAnimal"),   					// String nomAnimal
+						 rs.getString("Sexe"),  						// String sexe                    
+						 rs.getString("Couleur"),         			   	// String couleur       
+						 raceDAO.selectById(rs.getString("Race"),rs.getString("Espece")), // Race race, Race espece
+						 clientDAO.selectById(rs.getInt("CodeClient")), // int CodeClient
+						 rs.getString("Tatouage"),                      // String Tatouage
+						 rs.getString("Antecedents"),                   // String Antecedents
+						 rs.getBoolean("Archive"));                     // Bit archive
+				
+				liste.add(animal);						 
+			}
+
+		} catch (SQLException e) {
+			throw new DALException("selectByRace failed - id = " + codeClient, e);
 		} finally {
 			try {
 				

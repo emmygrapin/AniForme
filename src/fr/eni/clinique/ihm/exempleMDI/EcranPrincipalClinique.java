@@ -78,21 +78,21 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 	
 	// Lancement de l'application
 	public static void main(String[] args) {
-//		SwingUtilities.invokeLater(new Runnable() {
-//
-//			@Override
-//			public void run() {
-//				
-//				EcranPrincipalClinique ecran;
-//				ecran = EcranPrincipalClinique.getInstance();
-//			
-//				//TODO dialog authentification
-//				login loginEcran = new login(ecran);
-//				//TODO setVisible ici
-//				ecran.setVisible(true);
-//				
-//			}
-//		});
+		SwingUtilities.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				
+				EcranPrincipalClinique ecran;
+				ecran = EcranPrincipalClinique.getInstance();
+			
+				//TODO dialog authentification
+				login loginEcran = new login(ecran);
+				//TODO setVisible ici
+				ecran.setVisible(true);
+				
+			}
+		});
 
 	}
 
@@ -121,17 +121,18 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 		menuItem.addActionListener(this);
 		
 
-//		// Menu Agenda
-//		menuItem = new JMenuItem("Gestion d'Animaux");
-//		menuBarre.add(menuItem);		
-//		menuItem.setActionCommand("gestionAnimal");
 
 		menuItem = new JMenuItem("Gestion Client");
 		menuBarre.add(menuItem);		
 		menuItem.setActionCommand("gestionClient");
-
 		menuItem.addActionListener(this);
 
+//		// Menu Agenda
+//		menuItem = new JMenuItem("Gestion d'Animaux");
+//		menuBarre.add(menuItem);		
+//		menuItem.setActionCommand("gestionAnimal");
+//		menuItem.addActionListener(this);
+		
 	}
 
 	// Réagir aux clicks sur les menus

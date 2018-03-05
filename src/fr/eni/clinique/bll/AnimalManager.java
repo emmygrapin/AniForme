@@ -3,7 +3,6 @@ package fr.eni.clinique.bll;
 import java.util.List;
 
 import fr.eni.clinique.bo.Animal;
-import fr.eni.clinique.bo.Race;
 import fr.eni.clinique.dal.AnimalDAO;
 import fr.eni.clinique.dal.DALException;
 import fr.eni.clinique.dal.DAOFactory;
@@ -31,30 +30,41 @@ public class AnimalManager {
 		
 	}
 	
-	public List<Animal> getAnimaux() throws DALException {
+	public List<Animal> getAnimaux() {
+			List<Animal> listeAnimaux = null;
+		try {
 			
-		return daoAnimal.selectAll();	
+			listeAnimaux = daoAnimal.selectAll();
+		} catch (DALException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+		return listeAnimaux ;
 	}
 	
 	public Animal getAnimal(int codeAnimal) throws DALException {
-	
 		return daoAnimal.selectById(codeAnimal);	
 	}
 	
 	public void addAnimal(Animal animal) throws DALException {
-		
-		 daoAnimal.insert(animal);
-		
+		 daoAnimal.insert(animal);	
 	}
 	
-	public void removeAnimal(Animal animal) throws DALException {
-		
-		 daoAnimal.delete(animal.getCodeAnimal());
+	public void update(Animal animal) throws DALException {
+		daoAnimal.update(animal);
+	}
+	
+	public void updateIsArchive(Animal animal) throws DALException{
+		animal.setArchive(true);
+		daoAnimal.updateIsArchive(animal);
 	}
 	
 	public List<Animal> getEspeceByAnimal(Animal animal) throws DALException {
-		
 		String espece = animal.getRace().getEspece();
 		return daoAnimal.selectByEspece(espece);
+	}
+	
+	public List<Animal> getClientByAnimal(int codeClient) throws DALException {	
+		return daoAnimal.selectByClient(codeClient);
 	}
 }
