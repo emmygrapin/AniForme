@@ -1,6 +1,7 @@
 package fr.eni.clinique.bo;
 
 import java.util.ArrayList;
+import java.util.List;
 /**
  * 
  * @author alemercier2017
@@ -20,12 +21,12 @@ public class Client {
 	private String email;
 	private String remarque;
 	private Boolean archive;
-	private ArrayList<Animal> animaux;
+	private List<Animal> animaux;
 	
 	
 	public Client(int codeClient, String nomClient, String prenomClient, String adresse1, String adresse2,
 			String codePostal, String ville, String numeroTel, String assurance, String email, String remarque,
-			Boolean archive, ArrayList<fr.eni.clinique.bo.Animal> animaux) {
+			Boolean archive, List<fr.eni.clinique.bo.Animal> animaux) {
 		this.codeClient = codeClient;
 		this.nomClient = nomClient;
 		this.prenomClient = prenomClient;
@@ -59,7 +60,7 @@ public class Client {
 		this.animaux = new ArrayList<Animal>();
 	}
 	
-	public ArrayList<Animal> getAnimaux() {
+	public List<Animal> getAnimaux() {
 		return animaux;
 	}
 
