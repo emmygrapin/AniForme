@@ -132,9 +132,7 @@ public class Animal {
 		return archive;
 	}
 
-	public void setArchive(boolean archive) {
-		
-		
+	public void setArchive(boolean archive) {	
 		this.archive = archive;
 	}
 
