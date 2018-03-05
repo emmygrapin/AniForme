@@ -6,14 +6,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JDesktopPane;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 
+import fr.eni.clinique.bll.AnimalManager;
 import fr.eni.clinique.dal.DALException;
 import fr.eni.clinique.ihm.login;
+import fr.eni.clinique.ihm.ecranAnimal.AnimalGestion;
 import fr.eni.clinique.ihm.ecranPersonnel.PersonnelGestion;
 
 
@@ -25,6 +29,7 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 	private JMenuBar menuBarre;
 	private JMenu menuAgenda;
 	private PersonnelGestion ecranPersonnelGest;
+	private AnimalGestion ecranAnimalGest;
 
 
 	public EcranPrincipalClinique() {
@@ -45,6 +50,9 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 		
 		//(écran enfant) faire pour tous les écrans
 		desktopPane.add(getEcranPersonnelGestion());
+		
+		desktopPane.add(getEcranAnimalGestion());
+		
 
 	}
 
@@ -59,6 +67,7 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 				login loginEcran = new login(ecran);
 				//TODO setVisible ici
 				ecran.setVisible(true);
+				
 			}
 		});
 
@@ -83,9 +92,15 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 		menu.add(menuItem);
 
 		// Menu Agenda
-		menuItem = new JMenuItem("Gestion Personnel");
+		menuItem = new JMenuItem("Gestion du personnel");
 		menuBarre.add(menuItem);		
 		menuItem.setActionCommand("gestionPersonnel");
+		menuItem.addActionListener(this);
+		
+		// Menu Agenda
+		menuItem = new JMenuItem("Gestion d'Animaux");
+		menuBarre.add(menuItem);		
+		menuItem.setActionCommand("gestionAnimal");
 		menuItem.addActionListener(this);
 
 	}
@@ -103,6 +118,9 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 
 		case "gestionPersonnel":
 			getEcranPersonnelGestion().setVisible(true);
+			break;
+		case "gestionAnimal":
+			getEcranAnimalGestion().setVisible(true);
 			break;
 
 		default:
@@ -138,6 +156,22 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 			}
 		}
 		return ecranPersonnelGest;
+	}
+	
+	/**
+	 * Getter 
+	 * @return
+	 */
+	public AnimalGestion getEcranAnimalGestion() {
+		if(ecranAnimalGest == null){
+			try {
+				ecranAnimalGest  = new AnimalGestion(this);
+			} catch (DALException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return ecranAnimalGest;
 	}
 
 }
