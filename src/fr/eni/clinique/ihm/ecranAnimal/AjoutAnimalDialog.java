@@ -44,7 +44,7 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 	this.parent = parent;
 	this.client = client;
 	this.setTitle("Animaux");
-	this.setContentPane(viewAjoutAnimal());
+	this.setContentPane(viewNewAnimal());
 	this.setSize(700, 800);
 	this.setLocationRelativeTo(null);
 	this.setResizable(true);
@@ -58,7 +58,7 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 	 * @return
 	 * @throws DALException 
 	 */
-	public JPanel viewAjoutAnimal() {
+	public JPanel viewNewAnimal() {
 		
 		JPanel panelGestAnim = new JPanel();
 		panelGestAnim.setLayout(new GridBagLayout());
@@ -76,10 +76,10 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 		panelGestAnim.add(viewButtons(), gbc);
 		
 		gbc.gridy = 1;
-		panelGestAnim.add(viewClient(), gbc);
+		panelGestAnim.add(viewClient(client), gbc);
 		
 		gbc.gridy = 2;
-		panelGestAnim.add(getFormAjoutAnimal(), gbc);
+		panelGestAnim.add(getFormNewAnimal(), gbc);
 		
 		
 		return panelGestAnim;
@@ -114,7 +114,7 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 	 * Composant contenant le nom et le prénom du client
 	 * @return JPanel
 	 */
-	public JPanel viewClient() {
+	public JPanel viewClient(Client client) {
 		
 		JPanel panelClient = new JPanel();
 		panelClient.setLayout(new GridBagLayout());
@@ -125,10 +125,12 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 		Dimension dimension = new Dimension(450, 50);
 		panelClient.setPreferredSize(dimension);
 		
+		gbc.anchor = GridBagConstraints.WEST;
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		panelClient.setBorder(BorderFactory.createTitledBorder("Client:"));
-		//TODO récupérer le nom d'un client
+		panelClient.add(new JLabel(client.getNomClient() + " " + client.getPrenomClient()));
+		
 		
 		return panelClient;
 	}
@@ -139,7 +141,7 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 	 * @return JPanel
 	 * @throws DALException 
 	 */
-	public JPanel getFormAjoutAnimal() {
+	public JPanel getFormNewAnimal() {
 		
 		JPanel panelAnimal = new JPanel();
 		panelAnimal.setLayout(new GridBagLayout());
@@ -177,7 +179,7 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 		gbc.gridwidth = 1;
 		panelAnimal.add(new JLabel("Tatouage"), gbc);
 		gbc.gridx = 1;
-		panelAnimal.add(addFieldTatouage(), gbc);
+		panelAnimal.add(getFieldTatouage(), gbc);
 		
 		
 		return panelAnimal;
@@ -435,7 +437,7 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 	 * Créer et/ou retourne un champ Tatouage
 	 * @return JTextField
 	 */
-	private JTextField addFieldTatouage() {
+	private JTextField getFieldTatouage() {
 		
 		if ( txtTatouage == null) {
 			txtTatouage = new JTextField(20);

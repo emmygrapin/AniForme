@@ -65,7 +65,7 @@ public class AnimalManager {
 		return daoAnimal.selectByEspece(espece);
 	}
 	
-	public List<Animal> getClientByAnimal(Client client) throws DALException {	
+	public List<Animal> getAnimauxByClient(Client client) throws DALException {	
 		return daoAnimal.selectByClient(client.getCodeClient());
 	}
 }

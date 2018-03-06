@@ -368,8 +368,6 @@ public class AnimalGestion implements ActionListener {
 							AnimalManager animalManager = AnimalManager.getInstance();
 							animalManager.updateIsArchive(animal);	
 							refreshTableAnimaux();
-							// reset animal sélectionné
-							tableAnimal.setAnimalSelect(null);
 						}
 
 					} catch (DALException e1) {
@@ -431,7 +429,9 @@ public class AnimalGestion implements ActionListener {
 		sexes.add("Femelle");
 		sexes.add("Hermaphrodite");
 		
-		this.cbxSexe = new JComboBox(sexes);
+		if (this.cbxSexe == null) {
+			this.cbxSexe = new JComboBox(sexes);			
+		}
 		
 		return this.cbxSexe;
 	}
@@ -445,21 +445,18 @@ public class AnimalGestion implements ActionListener {
 			especes.add(race.getEspece());
 		}
 		
-		this.cbxEspece = new JComboBox(especes);
+		if (this.cbxEspece == null) {
+			this.cbxEspece = new JComboBox(especes);			
+		}
 		cbxEspece.addActionListener(this);
 
 		return this.cbxEspece;
 	}
 	
 	private JComboBox addCbxRace() throws DALException {
-		
-//		Vector<String> races = new Vector<String>();
-//		
-//		List<Race> listeRaces = RaceManager.getInstance().getRacesByEspece(espece);
-//		for (Race race : listeRaces ) {
-//			races.add(race.getRace());
-//		}
-		this.cbxRace = new JComboBox();
+		if (this.cbxRace == null ) {
+			this.cbxRace = new JComboBox();			
+		}
 		
 		return this.cbxRace;
 	}
@@ -493,7 +490,7 @@ public class AnimalGestion implements ActionListener {
 		AnimalManager animalMgr = AnimalManager.getInstance();
 		List<Animal> listeAnimaux = null;
 		try {
-			listeAnimaux = animalMgr.getClientByAnimal(client);
+			listeAnimaux = animalMgr.getAnimauxByClient(client);
 		} catch (DALException e) {
 			e.printStackTrace();
 		}
