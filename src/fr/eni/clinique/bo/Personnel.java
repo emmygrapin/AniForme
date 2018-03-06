@@ -60,14 +60,14 @@ public class Personnel {
 
 	public void setRole(String role) {
 		if (role != null) {
-			if (role.equals("Vétérinaire")) {
+			if (role.equals("Vétérinaire")|role.equals("VET")) {
 				this.role = "VET";
-			} else if (role.equals("Administrateur")) {
+			} else if (role.equals("Administrateur")|role.equals("ADM")) {
 				this.role = "ADM";
-			} else if (role.equals("Secrétaire")) {
+			} else if (role.equals("Secrétaire")|role.equals("SEC")) {
 				this.role = "SEC";
 			} else {
-				this.role = "ADM";
+				this.role = "SEC";
 			}
 		}
 
