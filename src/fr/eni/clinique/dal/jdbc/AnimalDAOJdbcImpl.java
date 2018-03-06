@@ -33,11 +33,11 @@ public class AnimalDAOJdbcImpl implements AnimalDAO{
 	private static final String sqlUpdate = "update Animaux set NomAnimal=?, Sexe=?, Couleur=?,Race=?,Espece=?, CodeClient=?, Tatouage=?, Antecedents=?, Archive=? where CodeAnimal=?";
 	private static final String sqlUpdateArchive = "update Animaux set Archive=? where CodeAnimal = ?";
 	private static final String sqlSelectByRace = "select CodeAnimal, NomAnimal, Sexe, Couleur, Race, Espece, CodeClient, Tatouage, Antecedents, Archive "
-			+ "from Animaux where Race like ?";
+			+ "from Animaux where Race like ? and Archive=0";
 	private static final String sqlSelectByEspece = "select CodeAnimal, NomAnimal, Sexe, Couleur, Race, Espece, CodeClient, Tatouage, Antecedents, Archive "
-			+"from Animaux where Espece like ?";
+			+"from Animaux where Espece like ? and Archive=0";
 	private static final String sqlSelectByClient = "select CodeAnimal, NomAnimal, Sexe, Couleur, Race, Espece, CodeClient, Tatouage, Antecedents, Archive "
-			+ "from Animaux where CodeClient like ?";
+			+ "from Animaux where CodeClient like ? and Archive=0";
 	
 	private Connection connection;
 	

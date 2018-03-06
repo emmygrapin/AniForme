@@ -23,7 +23,7 @@ public class TableAnimal extends JTable implements MouseListener {
 		AnimalManager animalManager = AnimalManager.getInstance();
 		List<Animal> listeAnimaux = null;
 		try {
-			listeAnimaux = animalManager.getClientByAnimal(client);
+			listeAnimaux = animalManager.getAnimauxByClient(client);
 		} catch (DALException e) {
 			e.printStackTrace();
 		}
