@@ -4,26 +4,26 @@ import java.util.Date;
 
 public class Agenda {
 	
-	private Personnel codeVeto;
+	private Personnel personnel;
 	private Animal animal;
 	private Date dateRdv;
-	public Agenda(Personnel codeVeto, Animal codeAnimal, Date dateRdv) {
+	public Agenda(Personnel personnel,Date dateRdv, Animal animal) {
 		super();
-		this.codeVeto = codeVeto;
-		this.animal = codeAnimal;
+		this.personnel = personnel;
+		this.animal = animal;
 		this.dateRdv = dateRdv;
 	}
-	public Personnel getCodeVeto() {
-		return codeVeto;
+	public Personnel getPersonnel() {
+		return personnel;
 	}
-	public void setCodeVeto(Personnel codeVeto) {
-		this.codeVeto = codeVeto;
+	public void setPersonnel(Personnel personnel) {
+		this.personnel = personnel;
 	}
-	public Animal getCodeAnimal() {
+	public Animal getAnimal() {
 		return animal;
 	}
-	public void setCodeAnimal(Animal codeAnimal) {
-		this.animal = codeAnimal;
+	public void setAnimal(Animal animal) {
+		this.animal = animal;
 	}
 	public Date getDateRdv() {
 		return dateRdv;
