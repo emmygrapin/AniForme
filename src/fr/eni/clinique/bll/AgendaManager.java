@@ -1,5 +1,6 @@
 package fr.eni.clinique.bll;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -40,11 +41,10 @@ public class AgendaManager {
 	
 	public List<Agenda> getAgendasParVetoParDate(int codeVeto, Date dateRdv){
 		List<Agenda> listeAgendasDate = null;
-		try{
-			
-			SimpleDateFormat dateRdvF = new SimpleDateFormat("yyyy-dd-MM HH:mm");
-			String date = dateRdvF.format(dateRdv );
-			daoAgenda.selectByVeterinaireByDate(codeVeto, date);
+		try
+		{
+		
+			daoAgenda.selectByVeterinaireByDate(codeVeto, dateRdv);
 		}
 		catch(DALException e){
 			

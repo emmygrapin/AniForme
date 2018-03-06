@@ -1,12 +1,14 @@
 package fr.eni.clinique.dal.jdbc;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import fr.eni.clinique.JdbcTools;
@@ -24,7 +26,7 @@ public class AgendaDAOJdbcImpl implements AgendaDAO {
 	private static final String sqlSelectByVeterinaireByDate = "select CodeAnimal, DateRdv, CodeVeto"
 			+ "from Agendas where CodeVeto = ? and Date = ?";
 
-	private static final String sqlInsert = "insert into Agendas (CodeVeto, DateRdv, CodeAnimal) values(?;?;?)";
+	private static final String sqlInsert = "insert into Agendas (CodeVeto, DateRdv, CodeAnimal) values(?,?,?)";
 	private static final String sqlDelete = "delete from Agendas where CodeVeto = ? and CodeAnimal = ? and DateRdv = ? ";
 	private Connection connection;
 
@@ -67,7 +69,7 @@ public class AgendaDAOJdbcImpl implements AgendaDAO {
 			rs = rqt.executeQuery();
 			Agenda agenda = null;
 			while (rs.next()) {
-				agenda = new Agenda(personnelDAO.selectById(rs.getInt("CodeVeto")), rs.getDate("DateRdv"),
+				agenda = new Agenda(personnelDAO.selectById(rs.getInt("CodeVeto")), rs.getTimestamp("DateRdv"),
 						animalDAO.selectById(rs.getInt("CodeAnimal")));
 				agendas.add(agenda);
 			}
@@ -91,7 +93,7 @@ public class AgendaDAOJdbcImpl implements AgendaDAO {
 	 * Requête qui permet de récupérer une liste de RDV par vétérinaire et par date
 	 */
 	@Override
-	public List<Agenda> selectByVeterinaireByDate(int codeVeto, String dateRdv) throws DALException {
+	public List<Agenda> selectByVeterinaireByDate(int codeVeto, Date dateRdv) throws DALException {
 		Connection cnx = null;
 		PreparedStatement rqt = null;
 		ResultSet rs = null;
@@ -103,11 +105,13 @@ public class AgendaDAOJdbcImpl implements AgendaDAO {
 			cnx = getConnection();
 			rqt = cnx.prepareStatement(sqlSelectByVeterinaireByDate);
 			rqt.setInt(1, codeVeto);
-			rqt.setString(2, dateRdv);
+			SimpleDateFormat date = new SimpleDateFormat("yyyyy-mm-dd hh:mm:ss");
+			String newDate = date.format(dateRdv);
+			rqt.setString(2, newDate);
 			rs = rqt.executeQuery();
 			Agenda agenda = null;
 			while (rs.next()) {
-				agenda = new Agenda(personnelDAO.selectById(rs.getInt("CodeVeto")), rs.getDate("DateRdv"),
+				agenda = new Agenda(personnelDAO.selectById(rs.getInt("CodeVeto")), rs.getTimestamp("DateRdv"),
 						animalDAO.selectById(rs.getInt("CodeAnimal")));
 				agendas.add(agenda);
 			}
@@ -136,7 +140,9 @@ public class AgendaDAOJdbcImpl implements AgendaDAO {
 			cnx = getConnection();
 			rqt = cnx.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS);
 			rqt.setInt(1, data.getPersonnel().getCodePerso());
-			rqt.setDate(2, (Date) data.getDateRdv());
+			SimpleDateFormat date = new SimpleDateFormat("yyyyy-mm-dd hh:mm:ss");
+			String newDate = date.format(data.getDateRdv());
+			rqt.setString(2,newDate);
 			rqt.setInt(3, data.getAnimal().getCodeAnimal());
 	
 			rqt.executeUpdate();
@@ -161,7 +167,7 @@ public class AgendaDAOJdbcImpl implements AgendaDAO {
 		Connection cnx = null;
 		PreparedStatement rqt = null;
 		int codeVeto = data.getPersonnel().getCodePerso();
-		Date dateRdv = (Date) data.getDateRdv();
+		Date dateRdv = data.getDateRdv();
 		int codeAnimal = data.getAnimal().getCodeAnimal();
 		
 		try {
@@ -169,7 +175,9 @@ public class AgendaDAOJdbcImpl implements AgendaDAO {
 
 			rqt = cnx.prepareStatement(sqlDelete);
 			rqt.setInt(1, codeVeto);
-			rqt.setDate(2, dateRdv);
+			SimpleDateFormat date = new SimpleDateFormat("yyyyy-mm-dd hh:mm:ss");
+			String newDate = date.format(data.getDateRdv());
+			rqt.setString(2, newDate);
 			rqt.setInt(3, codeAnimal);
 			rqt.executeUpdate();
 		} catch (SQLException e) {

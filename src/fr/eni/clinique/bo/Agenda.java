@@ -1,6 +1,8 @@
 package fr.eni.clinique.bo;
 
+import java.sql.Timestamp;
 import java.util.Date;
+
 
 public class Agenda {
 	
