@@ -25,7 +25,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import fr.eni.clinique.bll.AnimalManager;
-import fr.eni.clinique.bll.ClientManager;
 import fr.eni.clinique.bll.RaceManager;
 import fr.eni.clinique.bo.Animal;
 import fr.eni.clinique.bo.Client;
@@ -34,30 +33,22 @@ import fr.eni.clinique.dal.DALException;
 import fr.eni.clinique.dal.DAOFactory;
 import fr.eni.clinique.ihm.ApplyController;
 
-public class AnimalGestion extends JInternalFrame implements ActionListener {
+public class AnimalGestion implements ActionListener {
 
 	private JTextField txtNom, txtCouleur, txtTatouage;
 	private JButton btnValider, btnAnnuler, btnAjouter, btnEditer, btnSupprimer;
 	private JComboBox cbxSexe, cbxEspece, cbxRace;
 	
 	Hashtable<String, Vector<String>> cbxItems;
-	private JFrame parent;
+	private Client client;
 	private JButton btnAddAnimal;
 	
 	private TableAnimal tableAnimal;
 	
 	private static AnimalGestion _instance;
 	
-	public AnimalGestion(JFrame parent) throws DALException{	
-		super("Gestion des animaux du client", true, true, true, true);
-		this.parent = parent;
-		
-		this.setSize(900,800);
-		
-		this.setContentPane(viewGestionAnimaux());
-		this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		
-	
+	public AnimalGestion(Client client) throws DALException{
+		this.client = client;	
 	}
 	
 	public JPanel viewGestionAnimaux() {
@@ -76,118 +67,8 @@ public class AnimalGestion extends JInternalFrame implements ActionListener {
 		
 		return panelGestionAnimaux;
 
-	}
-	
-//	/**
-//	 * Page de création d'un animal avec les différents composants
-//	 * @return
-//	 * @throws DALException 
-//	 */
-//	public JPanel viewGestionAddAnimal() throws DALException {
-//		
-//		JPanel panelGestAnim = new JPanel();
-//		panelGestAnim.setLayout(new GridBagLayout());
-//		
-//		GridBagConstraints gbc = new GridBagConstraints();
-//		gbc.insets = new Insets(5, 5, 5, 5);
-//		
-//		Dimension dimension = new Dimension(450, 800);
-//		panelGestAnim.setPreferredSize(dimension);
-//		
-//		gbc.anchor = GridBagConstraints.WEST;
-//		gbc.gridx = 0;
-//		gbc.gridy = 0;
-//		//gbc.gridwidth = 1;
-//		panelGestAnim.add(viewButtons(), gbc);
-//		
-//		gbc.gridy = 1;
-//		panelGestAnim.add(viewClient(), gbc);
-//		
-//		gbc.gridy = 2;
-//		panelGestAnim.add(addAnimal(), gbc);
-//		
-//		
-//		return panelGestAnim;
-//	}
-	
-//	public JButton newAnimal() {
-//		
-//		this.btnAddAnimal = new JButton();
-//		
-//		this.btnAddAnimal.addActionListener(new ActionListener() {
-//			
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				
-//				JDialog ajoutAnimalDialog = new AjoutAnimalDialog();
-//			}
-//		});
-//		
-//		return this.btnAddAnimal;
-//	}
-	
-//	public JPanel viewClient() {
-//		
-//		JPanel panelClient = new JPanel();
-//		panelClient.setLayout(new GridBagLayout());
-//		
-//		GridBagConstraints gbc = new GridBagConstraints();
-//		gbc.insets = new Insets(5, 5, 5, 5);
-//		
-//		Dimension dimension = new Dimension(450, 50);
-//		panelClient.setPreferredSize(dimension);
-//		
-//		gbc.gridx = 0;
-//		gbc.gridy = 1;
-//		panelClient.setBorder(BorderFactory.createTitledBorder("Client:"));
-//		
-//		return panelClient;
-//	}
-	
-//	/**
-//	 * Ecran avec la liste d'animaux 
-//	 * @return JPanel
-//	 */
-//	public JPanel viewAnimaux() {
-//
-//		JPanel panelListeAnim = new JPanel();
-//		panelListeAnim.setLayout(new GridBagLayout());
-//		
-//		panelListeAnim.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-//		GridBagConstraints gbc = new GridBagConstraints();
-//		gbc.insets = new Insets(5, 5, 5, 5);
-//		
-//		Dimension dimension = new Dimension(450, 50);
-//		panelListeAnim.setPreferredSize(dimension);
-//		
-//		gbc.gridx = 0;
-//		gbc.gridy = 0;
-//		
-//		List<Animal> listAnimaux;
-//		try {
-//			listAnimaux = AnimalManager.getInstance().getAnimaux();
-//			for (Animal animal : listAnimaux) {
-//				panelListeAnim.add(viewUnAnimal(animal), gbc);
-//			}
-//		} catch (DALException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} 
-//		
-//		
-//
-//		return panelListeAnim;
-//	}
+	}	
 
-//	public JPanel viewUnAnimal(Animal animal) {
-//		
-//		JPanel panelAnimal = new JPanel();
-//		panelAnimal.setLayout(new GridBagLayout());
-//		
-//		panelAnimal.setBorder(BorderFactory.createEmptyBorder());
-//		
-//		return panelAnimal;
-//	}
 
 	/**
 	 *  Composant contenant les boutons "valider" et "annuler"
@@ -371,16 +252,8 @@ public class AnimalGestion extends JInternalFrame implements ActionListener {
 					} else {
 							System.out.println("getBtnValider e race : " + cbxRace.getSelectedItem());
 							System.out.println("getBtnValider e espèce : " + cbxEspece.getSelectedItem());
-						try {
-		
-							ClientManager clientManager = ClientManager.getInstance();
-							Client client = clientManager.getClient(1);
 							Animal animal = newAnimal(client);
-							//ApplyController.getInstance().move("listAnim", new ArrayList<>());
-							
-						} catch(DALException e1) {
-							
-						}
+						
 					}
 				}
 			});
@@ -429,7 +302,7 @@ public class AnimalGestion extends JInternalFrame implements ActionListener {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {	
-					AjoutAnimalDialog newAnimal = new AjoutAnimalDialog();
+					AjoutAnimalDialog newAnimal = new AjoutAnimalDialog(client, AnimalGestion.this);
 				}
 			});
 		}
@@ -607,7 +480,7 @@ public class AnimalGestion extends JInternalFrame implements ActionListener {
 		
 		if (tableAnimal == null) {
 			
-			this.tableAnimal = new TableAnimal();
+			this.tableAnimal = new TableAnimal(client);
 			tableAnimal.setFillsViewportHeight(true);
 			tableAnimal.setPreferredScrollableViewportSize(new Dimension(500, 200));
 			
@@ -618,7 +491,12 @@ public class AnimalGestion extends JInternalFrame implements ActionListener {
 	public void refreshTableAnimaux() {
 		
 		AnimalManager animalMgr = AnimalManager.getInstance();
-		List<Animal> listeAnimaux = animalMgr.getAnimaux();
+		List<Animal> listeAnimaux = null;
+		try {
+			listeAnimaux = animalMgr.getClientByAnimal(client);
+		} catch (DALException e) {
+			e.printStackTrace();
+		}
 		getTableAnimal().getTableModAnimal().setListeAnimaux(listeAnimaux);
 		
 		

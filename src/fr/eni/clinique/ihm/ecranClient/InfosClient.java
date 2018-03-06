@@ -22,6 +22,7 @@ import fr.eni.clinique.bo.Client;
 import fr.eni.clinique.dal.DALException;
 import fr.eni.clinique.ihm.ApplyController;
 import fr.eni.clinique.ihm.login;
+import fr.eni.clinique.ihm.ecranAnimal.AnimalGestion;
 
 public class InfosClient extends JInternalFrame{
 
@@ -35,7 +36,7 @@ public class InfosClient extends JInternalFrame{
 		super("Gestion des clients", true, true, true,true);
 		
 		// Réglage de la taille du conteneur
-		this.setSize(900, 800);
+		this.setSize(1000, 800);
 	
 		this.setContentPane(globalClient());
 		// Fermeture de l'application JAVA lorsque on clique sur la croix
@@ -152,13 +153,29 @@ public class InfosClient extends JInternalFrame{
 		gbc.insets = new Insets(5, 5, 5, 5);
 		gbc.gridx = 0;
 		gbc.gridy = 0;
+		gbc.gridwidth = 2;
 		panelClient.add(MenuClient(), gbc);
 		
+		gbc.gridwidth = 1;
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.weightx = 1;
 		gbc.anchor = GridBagConstraints.LINE_START;
 		panelClient.add(upClient(), gbc);
+		if(clientActif != null)
+		{
+			gbc.gridx = 1;
+			gbc.gridy = 1;
+			gbc.anchor = GridBagConstraints.LINE_END;
+			AnimalGestion animaux;
+			try {
+				animaux = new AnimalGestion(clientActif);
+				panelClient.add(animaux.viewGestionAnimaux(), gbc);
+			} catch (DALException e) {
+				e.printStackTrace();
+			}
+			
+		}
 		
 		return panelClient;
 	}
@@ -199,8 +216,9 @@ public class InfosClient extends JInternalFrame{
 	
 	public void refresh() 
 	{	
-		System.out.println(clientActif);
 		this.setContentPane(globalClient());
+		this.validate();
+		this.repaint();
 	}
 	
 	

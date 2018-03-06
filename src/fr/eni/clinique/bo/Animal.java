@@ -73,11 +73,11 @@ public class Animal {
 
 	public void setSexe(String sexe) {
 		if (sexe != null) {
-			if (sexe.equals("Mâle")) { 
+			if (sexe.equals("Mâle") || sexe.equals("M")) { 
 				this.sexe = "M";
-			} else if (sexe.equals("Femelle")) {
+			} else if (sexe.equals("Femelle") || sexe.equals("F")) {
 				this.sexe = "F";			
-			} else if (sexe.equals("Hermaphrodite")){
+			} else if (sexe.equals("Hermaphrodite") || sexe.equals("H")){
 				this.sexe = "H";
 			} else {
 				this.sexe = "H";

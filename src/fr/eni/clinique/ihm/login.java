@@ -17,6 +17,8 @@ import javax.swing.JTextField;
 
 import fr.eni.clinique.bll.BLLException;
 import fr.eni.clinique.bll.LoginMger;
+import fr.eni.clinique.bo.Personnel;
+import fr.eni.clinique.ihm.exempleMDI.EcranPrincipalClinique;
 
 /**
  * 
@@ -34,7 +36,7 @@ public class login extends JDialog{
 		super(parent, true);
 	
 	this.setTitle("Authentification");
-	this.setContentPane(viewAuthentification());
+	this.setContentPane(viewAuthentification(parent));
 	this.setSize(500, 200);
 	this.setLocationRelativeTo(null);
 	this.setResizable(false);
@@ -43,7 +45,7 @@ public class login extends JDialog{
 	
 	}
 	
-	public JPanel viewAuthentification() {
+	public JPanel viewAuthentification(JFrame parent) {
 
 		JPanel panelAuthentification = new JPanel();
 		panelAuthentification.setLayout(new GridBagLayout());
@@ -62,7 +64,7 @@ public class login extends JDialog{
 		gbc.gridy = 1;
 		panelAuthentification.add(this.addFieldMotDePasse(), gbc);
 		gbc.gridy = 2;
-		panelAuthentification.add(this.addButtonValider(), gbc);
+		panelAuthentification.add(this.addButtonValider((EcranPrincipalClinique)parent), gbc);
 
 		return panelAuthentification;
 	}
@@ -78,7 +80,7 @@ public class login extends JDialog{
 	}
 	// Bouton valider qui génère l'action du login manager en lui passant l'identifiant
 	// et le mot de passe saisis
-	public JButton addButtonValider() {
+	public JButton addButtonValider(EcranPrincipalClinique parent) {
 		this.buttonValider = new JButton("Valider");
 
 		// Action du bouton Valider d'authentification
@@ -89,14 +91,14 @@ public class login extends JDialog{
 				try {
 					String identifiantSaisi = txtNom.getText();
 					String motDePasseSaisi = txtMotDePasse.getText();
-					LoginMger.getInstance().getConnexion(identifiantSaisi, motDePasseSaisi);
+					Personnel personnel =LoginMger.getInstance().getConnexion(identifiantSaisi, motDePasseSaisi);
 					login.this.setVisible(false);
-					
+					parent.setPersonnelActif(personnel);
+					parent.refreshMenu();
 				} catch (BLLException e1) {
 					alert.showMessageDialog(null, e1.getMessage(), "Erreur",
 							JOptionPane.ERROR_MESSAGE);
 				}
-
 			}
 		});
 		return buttonValider;

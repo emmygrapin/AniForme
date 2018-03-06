@@ -34,12 +34,15 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 	private JTextField txtNom, txtCouleur, txtTatouage;
 	private JButton btnValider, btnAnnuler;
 	private JComboBox cbxSexe, cbxEspece, cbxRace;
+	private Client client;
+	private AnimalGestion parent;
 	
 	Hashtable<String, Vector<String>> cbxItems;
 
-	public AjoutAnimalDialog() {
+	public AjoutAnimalDialog(Client client,  AnimalGestion parent) {
 	
-		
+	this.parent = parent;
+	this.client = client;
 	this.setTitle("Animaux");
 	this.setContentPane(viewAjoutAnimal());
 	this.setSize(700, 800);
@@ -196,25 +199,13 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 				public void actionPerformed(ActionEvent e) {
 					
 					if (txtNom.getText().isEmpty() || txtCouleur.getText().isEmpty() || txtTatouage.getText().isEmpty()) {
-						System.out.println("getBtnValider race : " + cbxRace.getSelectedItem());
-						System.out.println("getBtnValider espèce : " + cbxEspece.getSelectedItem());
+						
 						
 					} else {
-						//TODO
-							System.out.println("getBtnValider e race : " + cbxRace.getSelectedItem());
-							System.out.println("getBtnValider e espèce : " + cbxEspece.getSelectedItem());
-						try {
-		
-							ClientManager clientManager = ClientManager.getInstance();
-							//TODO paramètre getClient hardCode à modifier
-							Client client = clientManager.getClient(1);
-							Animal animal = newAnimal(client);
-							
-							
-							
-						} catch(DALException e1) {
-						//TODO message d'erreur getBtnValider	
-						}
+						ClientManager clientManager = ClientManager.getInstance();
+						Animal animal = newAnimal(client);
+						parent.refreshTableAnimaux();
+						AjoutAnimalDialog.this.dispose();
 					}
 				}
 			});
@@ -262,15 +253,7 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 				@Override
 				public void actionPerformed(ActionEvent e)
 				{
-					//TODO routing page vers la gestion des animaux
-					
-					
-//					try {
-//						ApplyController.getInstance().move("listAnim", new ArrayList());
-//					} catch (DALException e1) {
-//						// TODO Auto-generated catch block
-//						e1.printStackTrace();
-//					}
+					AjoutAnimalDialog.this.dispose();
 				}
 			});
 		}

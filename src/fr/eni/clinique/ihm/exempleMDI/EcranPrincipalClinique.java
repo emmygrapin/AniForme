@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
@@ -11,8 +13,11 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 
 import fr.eni.clinique.bo.Client;
+import fr.eni.clinique.bo.Personnel;
 import fr.eni.clinique.dal.DALException;
 import fr.eni.clinique.ihm.login;
 import fr.eni.clinique.ihm.ecranAnimal.AnimalGestion;
@@ -29,9 +34,10 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 	
 	private JDesktopPane desktopPane;
 	private JMenuBar menuBarre;
-	private JMenu menuAgenda;
+	private JMenu menuPersonnel, menuClient, menuAnimaux;
 	private PersonnelGestion ecranPersonnelGest;
 	private AnimalGestion ecranAnimalGest;
+	private Personnel personnelActif;
 
 	private InfosClient ecranClientGest;
 	private Client clientActif = null;
@@ -61,7 +67,7 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 		desktopPane.add(getEcranInfosGestion());
 		
 
-		desktopPane.add(getEcranAnimalGestion());
+		//desktopPane.add(getEcranAnimalGestion());
 
 
 	}
@@ -88,8 +94,11 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 			
 				//TODO dialog authentification
 				login loginEcran = new login(ecran);
-//				//TODO setVisible ici
-				ecran.setVisible(true);
+				
+				if(ecran.personnelActif != null)
+				{
+					ecran.setVisible(true);
+				}
 				
 			}
 		});
@@ -114,27 +123,82 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 		menuItem.addActionListener(this);
 		menu.add(menuItem);
 
-		// Menu Agenda
-		menuItem = new JMenuItem("Gestion du personnel");
-		menuBarre.add(menuItem);		
-		menuItem.setActionCommand("gestionPersonnel");
-		menuItem.addActionListener(this);
+		// Menu Gestion de Personnel
+		menuPersonnel = new JMenu("Gestion du personnel");
+		menuBarre.add(menuPersonnel);
 		
+		menuPersonnel.addMenuListener(new MenuListener() {
+		    @Override
+		    public void menuSelected(MenuEvent e) {
+		    	getEcranPersonnelGestion().setVisible(true);
+		    }
 
+			@Override
+			public void menuCanceled(MenuEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
 
-		menuItem = new JMenuItem("Gestion Client");
-		menuBarre.add(menuItem);		
+			@Override
+			public void menuDeselected(MenuEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+
+		// Menu Gestion de Client
+		menuClient = new JMenu("Gestion des Rendez-vous");
+		menuBarre.add(menuClient);
+		
+		// Sous menu Prise Rendez vous
+		menuItem = new JMenuItem("Prise de rendez-vous");
+		menuItem.setActionCommand("rendezvous");
+		menuItem.addActionListener(this);
+		menuClient.add(menuItem);
+
+		// Sous menu Gestion Clients
+		menuItem = new JMenuItem("Gestion Clients");
 		menuItem.setActionCommand("gestionClient");
 		menuItem.addActionListener(this);
+		menuClient.add(menuItem);
+		
 
-		// Menu Agenda
-		menuItem = new JMenuItem("Gestion d'Animaux");
-		menuBarre.add(menuItem);		
-		menuItem.setActionCommand("gestionAnimal");
-		menuItem.addActionListener(this);
+		// Menu Gestion Animaux
+		menuAnimaux = new JMenu("Gestion d'Animaux");
+		menuBarre.add(menuAnimaux);
+		
+		menuAnimaux.addMenuListener(new MenuListener() {
+		    @Override
+		    public void menuSelected(MenuEvent e) {
+		    	//getEcranAnimalGestion().setVisible(true);
+		    }
+
+			@Override
+			public void menuCanceled(MenuEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void menuDeselected(MenuEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		
 	}
-
+	
+	public void refreshMenu ()
+	{
+		if(personnelActif.getRole() != "ADM")
+		{
+			menuPersonnel.enable(false);
+			menuPersonnel.setVisible(false);
+			this.validate();
+			this.repaint();
+		}
+	}
+	
 	// Réagir aux clicks sur les menus
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -145,18 +209,12 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 		case "fermer":
 			System.exit(0);
 			break;
-
-		case "gestionPersonnel":
-			getEcranPersonnelGestion().setVisible(true);
+		case "rendezvous":
+			System.exit(0);
 			break;
-			
 		case "gestionClient":
 			getEcranInfosGestion().setVisible(true);
 			break;
-		case "gestionAnimal":
-			getEcranAnimalGestion().setVisible(true);
-			break;
-
 		default:
 			System.out.println("Probleme e=" + e);
 		}
@@ -225,16 +283,21 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 	 * Getter 
 	 * @return
 	 */
-	public AnimalGestion getEcranAnimalGestion() {
-		if(ecranAnimalGest == null){
-			try {
-				ecranAnimalGest  = new AnimalGestion(this);
-			} catch (DALException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return ecranAnimalGest;
+//	public AnimalGestion getEcranAnimalGestion() {
+//		if(ecranAnimalGest == null){
+//			try {
+//				ecranAnimalGest  = new AnimalGestion(this);
+//			} catch (DALException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+//		return ecranAnimalGest;
+//	}
+	
+	public void setPersonnelActif(Personnel personnel)
+	{
+		personnelActif = personnel;	
 	}
 	
 	

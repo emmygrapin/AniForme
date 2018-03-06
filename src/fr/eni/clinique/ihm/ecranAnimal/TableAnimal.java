@@ -8,6 +8,7 @@ import javax.swing.JTable;
 
 import fr.eni.clinique.bll.AnimalManager;
 import fr.eni.clinique.bo.Animal;
+import fr.eni.clinique.bo.Client;
 import fr.eni.clinique.dal.DALException;
 
 public class TableAnimal extends JTable implements MouseListener {
@@ -17,10 +18,15 @@ public class TableAnimal extends JTable implements MouseListener {
 
 	private TableModelAnimal tableModAnimal;
 	
-	public TableAnimal() {
+	public TableAnimal(Client client) {
 		// récupère la liste de personnels depuis la base
 		AnimalManager animalManager = AnimalManager.getInstance();
-		List<Animal> listeAnimaux = animalManager.getAnimaux();
+		List<Animal> listeAnimaux = null;
+		try {
+			listeAnimaux = animalManager.getClientByAnimal(client);
+		} catch (DALException e) {
+			e.printStackTrace();
+		}
 		
 		tableModAnimal = new TableModelAnimal(listeAnimaux);
 		tableModAnimal.getColumnName(0);
