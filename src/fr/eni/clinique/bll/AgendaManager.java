@@ -1,5 +1,6 @@
 package fr.eni.clinique.bll;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -31,10 +32,10 @@ public class AgendaManager {
 	 * @param codeVeto
 	 * @return
 	 */
-	public List<Agenda> getAgendasParVeto(int codeVeto){
+	public List<Agenda> getAgendasParVeto(int codeVeto)throws DALException{
 		List<Agenda> listeAgendasVeto = null;
 		try{
-		 daoAgenda.selectByVeterinaire(codeVeto);
+			listeAgendasVeto = daoAgenda.selectByVeterinaire(codeVeto);
 		}
 		catch (DALException e) {
 			// TODO: handle exception
@@ -48,12 +49,11 @@ public class AgendaManager {
 	 * @param dateRdv
 	 * @return
 	 */
-	public List<Agenda> getAgendasParVetoParDate(int codeVeto, Date dateRdv){
-		List<Agenda> listeAgendasDate = null;
+	public List<Agenda> getAgendasParVetoParDate(int codeVeto, Date dateRdv)throws DALException{
+		List<Agenda> listeAgendasDate = new ArrayList<Agenda>();
 		try
 		{
-		
-			daoAgenda.selectByVeterinaireByDate(codeVeto, dateRdv);
+			listeAgendasDate = daoAgenda.selectByVeterinaireByDate(codeVeto, dateRdv);
 		}
 		catch(DALException e){
 			

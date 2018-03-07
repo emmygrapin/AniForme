@@ -105,7 +105,7 @@ public class AgendaDAOJdbcImpl implements AgendaDAO {
 			cnx = getConnection();
 			rqt = cnx.prepareStatement(sqlSelectByVeterinaireByDate);
 			rqt.setInt(1, codeVeto);
-			SimpleDateFormat date = new SimpleDateFormat("yyyyy-mm-dd hh:mm:ss");
+			SimpleDateFormat date = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
 			String newDate = date.format(dateRdv);
 			rqt.setString(2, newDate);
 			rs = rqt.executeQuery();
