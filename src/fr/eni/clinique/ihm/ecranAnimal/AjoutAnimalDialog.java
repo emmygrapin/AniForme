@@ -16,7 +16,6 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -34,17 +33,19 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 	private JTextField txtNom, txtCouleur, txtTatouage;
 	private JButton btnValider, btnAnnuler;
 	private JComboBox cbxSexe, cbxEspece, cbxRace;
+	private JLabel labelCode;
 	private Client client;
 	private AnimalGestion parent;
+
 	
 	Hashtable<String, Vector<String>> cbxItems;
 
-	public AjoutAnimalDialog(Client client,  AnimalGestion parent) {
+	public AjoutAnimalDialog(Client client,  AnimalGestion parent, Animal animal) {
 	
 	this.parent = parent;
 	this.client = client;
 	this.setTitle("Animaux");
-	this.setContentPane(viewNewAnimal());
+	this.setContentPane(viewNewAnimal(animal));
 	this.setSize(700, 800);
 	this.setLocationRelativeTo(null);
 	this.setResizable(true);
@@ -58,7 +59,7 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 	 * @return
 	 * @throws DALException 
 	 */
-	public JPanel viewNewAnimal() {
+	public JPanel viewNewAnimal(Animal animal) {
 		
 		JPanel panelGestAnim = new JPanel();
 		panelGestAnim.setLayout(new GridBagLayout());
@@ -66,20 +67,21 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(5, 5, 5, 5);
 		
-		Dimension dimension = new Dimension(700, 800);
+		
+		Dimension dimension = new Dimension(500, 800);
 		panelGestAnim.setPreferredSize(dimension);
 		
-		gbc.anchor = GridBagConstraints.WEST;
+		gbc.anchor = GridBagConstraints.CENTER;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		//gbc.gridwidth = 1;
-		panelGestAnim.add(viewButtons(), gbc);
+		panelGestAnim.add(viewButtons(animal), gbc);
 		
 		gbc.gridy = 1;
 		panelGestAnim.add(viewClient(client), gbc);
 		
 		gbc.gridy = 2;
-		panelGestAnim.add(getFormNewAnimal(), gbc);
+		panelGestAnim.add(getFormNewAnimal(animal), gbc);
 		
 		
 		return panelGestAnim;
@@ -89,7 +91,7 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 	 *  Composant contenant les boutons "valider" et "annuler"
 	 * @return JPanel
 	 */
-	public JPanel viewButtons() {
+	public JPanel viewButtons(Animal animal) {
 		
 		JPanel panelButtons = new JPanel();
 		panelButtons.setLayout(new GridBagLayout());
@@ -100,10 +102,11 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 		
 		Dimension dimension = new Dimension(450, 50);
 		panelButtons.setPreferredSize(dimension);
+
 		gbc.anchor = GridBagConstraints.EAST;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		panelButtons.add(getBtnValider(), gbc);
+		panelButtons.add(getBtnValider(animal), gbc);
 		gbc.gridx = 1;
 		panelButtons.add(getBtnAnnuler(), gbc);
 		
@@ -141,14 +144,24 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 	 * @return JPanel
 	 * @throws DALException 
 	 */
-	public JPanel getFormNewAnimal() {
+	public JPanel getFormNewAnimal(Animal animal) {
 		
 		JPanel panelAnimal = new JPanel();
 		panelAnimal.setLayout(new GridBagLayout());
 		
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.insets = new Insets(5, 5, 5, 5);		
-
+		gbc.insets = new Insets(5, 5, 5, 5);
+		
+//		Dimension dimension = new Dimension(700, 700);
+//		panelAnimal.setPreferredSize(dimension);
+		
+		// ligne "Code"
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		panelAnimal.add(new JLabel("Code"), gbc);
+		gbc.gridx = 1;
+		panelAnimal.add(getLabelCode(animal), gbc);
+		
 		// ligne "Nom"
 		gbc.gridx = 0;
 		gbc.gridy = 1;
@@ -181,6 +194,16 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 		gbc.gridx = 1;
 		panelAnimal.add(getFieldTatouage(), gbc);
 		
+		if (animal != null) {
+			txtNom.setText(String.valueOf(animal.getCodeAnimal()));
+			txtNom.setText(animal.getNomAnimal());
+			cbxSexe.setSelectedItem(animal.getSexeToString());
+			txtCouleur.setText(animal.getCouleur());
+			cbxEspece.setSelectedItem(animal.getRace().getEspece());
+			refreshRace();
+			cbxRace.setSelectedItem(animal.getRace().getRace());
+			txtTatouage.setText(animal.getTatouage());
+		}
 		
 		return panelAnimal;
 		
@@ -190,7 +213,7 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 	 * Bouton qui valide l'ajout d'un animal
 	 * @return JButton 
 	 */
-	public JButton getBtnValider() {
+	public JButton getBtnValider(Animal animal) {
 
 		if ( this.btnValider == null) {
 			
@@ -200,15 +223,33 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					
+					AnimalManager animalMgr = AnimalManager.getInstance();
 					if (txtNom.getText().isEmpty() || txtCouleur.getText().isEmpty() || txtTatouage.getText().isEmpty()) {
-						
-						
+						//TODO message champs vides
 					} else {
-						ClientManager clientManager = ClientManager.getInstance();
-						Animal animal = newAnimal(client);
-						parent.refreshTableAnimaux();
-						AjoutAnimalDialog.this.dispose();
+						if (animal != null) {
+							try {
+								Animal newAnimal = newAnimal(client);
+								newAnimal.setCodeAnimal(animal.getCodeAnimal());
+								animalMgr.update(newAnimal);
+							} catch (DALException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+						} else {
+							Animal newAnimal = newAnimal(client);
+							try {
+								animalMgr.addAnimal(newAnimal);
+							} catch (DALException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+						}
 					}
+					parent.refreshTableAnimaux();
+					
+					//ferme la fenêtre
+					AjoutAnimalDialog.this.dispose();
 				}
 			});
 		}
@@ -231,8 +272,7 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 		try {
 			race = raceManager.getRace((cbxRace.getSelectedItem().toString()), (cbxEspece.getSelectedItem().toString()));
 			animal = new Animal(txtNom.getText(), (String)cbxSexe.getSelectedItem(), txtCouleur.getText(),race , client , txtTatouage.getText(), "", false);
-//			System.out.println("new Animal animal : " + animal.toString());
-			animalManager.addAnimal(animal);
+
 		} catch (DALException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -263,7 +303,23 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 	}
 	
 	/**
-	 * Action qui s'enclenche quand l'ActionListener est lancé (méthode getCbxEspece())
+	 * Même action que la méthode actionPerformed appelée sans l'ActionListener
+	 */
+	private void refreshRace() {
+		String espece = cbxEspece.getSelectedItem().toString();
+		
+		Object obj = cbxItems.get(espece);
+		
+		if ( obj == null) {
+			cbxRace.setModel(new DefaultComboBoxModel());
+		} else {
+			cbxRace.setModel(new DefaultComboBoxModel((Vector<String>) obj));
+		}
+		
+	}
+	
+	/**
+	 * Action qui s'enclenche quand l'ActionListener est lancé (dans la méthode getCbxEspece())
 	 * Récupère l'espèce sélectionné dans le menu déroulant et affiche le tableau(Vector)
 	 *  de Races correspondantes dynamiquement
 	 */
@@ -279,6 +335,19 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 			cbxRace.setModel(new DefaultComboBoxModel((Vector<String>) obj));
 		}
 		
+	}
+	
+	private JLabel getLabelCode(Animal animal) {
+		if (this.labelCode == null) {
+			if (animal == null) {
+				this.labelCode = new JLabel("aucun");
+			} else {
+				this.labelCode = new JLabel(animal.getCodeAnimal() + "");
+			}
+		}
+		
+		
+		return labelCode;
 	}
 	
 	/**
