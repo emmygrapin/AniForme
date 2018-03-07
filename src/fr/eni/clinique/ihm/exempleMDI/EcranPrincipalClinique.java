@@ -23,6 +23,7 @@ import fr.eni.clinique.ihm.login;
 import fr.eni.clinique.ihm.ecranAnimal.AnimalGestion;
 import fr.eni.clinique.ihm.ecranClient.InfosClient;
 import fr.eni.clinique.ihm.ecranPersonnel.PersonnelGestion;
+import fr.eni.clinique.ihm.ecranRDV.GestionRDV;
 
 
 public class EcranPrincipalClinique extends JFrame implements ActionListener {
@@ -34,11 +35,12 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 	
 	private JDesktopPane desktopPane;
 	private JMenuBar menuBarre;
-	private JMenu menuPersonnel, menuClient, menuAnimaux;
+	private JMenu menuPersonnel, menuClient, menuAnimaux, menuAgenda;
 	private PersonnelGestion ecranPersonnelGest;
 	private AnimalGestion ecranAnimalGest;
 	private Personnel personnelActif;
 
+	private GestionRDV ecranRDVGest;
 	private InfosClient ecranClientGest;
 	private Client clientActif = null;
 	
@@ -61,10 +63,9 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 		setJMenuBar(getMenuBarre());
 		
 		//(écran enfant) faire pour tous les écrans
-		desktopPane.add(getEcranPersonnelGestion());
-
-		
+		desktopPane.add(getEcranPersonnelGestion());		
 		desktopPane.add(getEcranInfosGestion());
+		desktopPane.add(getEcranRDVGestion());
 		
 
 		//desktopPane.add(getEcranAnimalGestion());
@@ -162,6 +163,31 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 		menuItem.addActionListener(this);
 		menuClient.add(menuItem);
 		
+		
+		// Menu Agenda
+		menuAgenda = new JMenu("Agenda");
+		menuBarre.add(menuAgenda);
+		
+		menuAgenda.addMenuListener(new MenuListener() {
+		    @Override
+		    public void menuSelected(MenuEvent e) {
+		    	// Emmy : get sur ton ecran
+		    	//getEcranPersonnelGestion().setVisible(true);
+		    }
+
+			@Override
+			public void menuCanceled(MenuEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void menuDeselected(MenuEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
 
 		// Menu Gestion Animaux
 		menuAnimaux = new JMenu("Gestion d'Animaux");
@@ -209,11 +235,11 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 		case "fermer":
 			System.exit(0);
 			break;
-		case "rendezvous":
-			System.exit(0);
-			break;
 		case "gestionClient":
 			getEcranInfosGestion().setVisible(true);
+			break;
+		case "rendezvous":
+			getEcranRDVGestion().setVisible(true);
 			break;
 		default:
 			System.out.println("Probleme e=" + e);
@@ -261,6 +287,20 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 			}
 		}
 		return ecranClientGest;
+	}
+	
+	
+	public GestionRDV getEcranRDVGestion() {
+		if(ecranRDVGest == null){
+			try {
+				ecranRDVGest  = new GestionRDV();
+
+			} catch (DALException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return ecranRDVGest;
 	}
 		
 
