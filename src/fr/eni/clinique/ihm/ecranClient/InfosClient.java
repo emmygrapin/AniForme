@@ -17,11 +17,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import fr.eni.clinique.bll.AnimalManager;
 import fr.eni.clinique.bll.ClientManager;
 import fr.eni.clinique.bo.Client;
 import fr.eni.clinique.dal.DALException;
-import fr.eni.clinique.ihm.ApplyController;
-import fr.eni.clinique.ihm.login;
 import fr.eni.clinique.ihm.ecranAnimal.AnimalGestion;
 
 public class InfosClient extends JInternalFrame{
@@ -375,6 +374,7 @@ public class InfosClient extends JInternalFrame{
 					    		try {
 					    			clientActif.setArchive(true);
 									ClientManager.getInstance().updateClient(clientActif);
+									AnimalManager.getInstance().updateIsArchiveByClient(clientActif);
 									InfosClient.this.clientActif = null;
 									
 									InfosClient.this.refresh();
@@ -388,6 +388,8 @@ public class InfosClient extends JInternalFrame{
 			});
 		return btnArchiver;
 	}
+	
+	 
 
 	
 	
