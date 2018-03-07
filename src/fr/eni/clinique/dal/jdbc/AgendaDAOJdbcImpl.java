@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -140,7 +140,7 @@ public class AgendaDAOJdbcImpl implements AgendaDAO {
 			cnx = getConnection();
 			rqt = cnx.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS);
 			rqt.setInt(1, data.getPersonnel().getCodePerso());
-			SimpleDateFormat date = new SimpleDateFormat("yyyyy-mm-dd hh:mm:ss");
+			SimpleDateFormat date = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
 			String newDate = date.format(data.getDateRdv());
 			rqt.setString(2,newDate);
 			rqt.setInt(3, data.getAnimal().getCodeAnimal());
@@ -167,7 +167,6 @@ public class AgendaDAOJdbcImpl implements AgendaDAO {
 		Connection cnx = null;
 		PreparedStatement rqt = null;
 		int codeVeto = data.getPersonnel().getCodePerso();
-		Date dateRdv = data.getDateRdv();
 		int codeAnimal = data.getAnimal().getCodeAnimal();
 		
 		try {
@@ -175,7 +174,7 @@ public class AgendaDAOJdbcImpl implements AgendaDAO {
 
 			rqt = cnx.prepareStatement(sqlDelete);
 			rqt.setInt(1, codeVeto);
-			SimpleDateFormat date = new SimpleDateFormat("yyyyy-mm-dd hh:mm:ss");
+			SimpleDateFormat date = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
 			String newDate = date.format(data.getDateRdv());
 			rqt.setString(2, newDate);
 			rqt.setInt(3, codeAnimal);

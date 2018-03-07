@@ -1,7 +1,5 @@
 package fr.eni.clinique.bll;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +26,11 @@ public class AgendaManager {
 		
 	}
 	
+	/**
+	 * sélection de l'agenda par codePerso
+	 * @param codeVeto
+	 * @return
+	 */
 	public List<Agenda> getAgendasParVeto(int codeVeto){
 		List<Agenda> listeAgendasVeto = null;
 		try{
@@ -39,6 +42,12 @@ public class AgendaManager {
 		return listeAgendasVeto;	
 	}
 	
+	/**
+	 * sélection de l'agenda par codePerso et date
+	 * @param codeVeto
+	 * @param dateRdv
+	 * @return
+	 */
 	public List<Agenda> getAgendasParVetoParDate(int codeVeto, Date dateRdv){
 		List<Agenda> listeAgendasDate = null;
 		try
@@ -52,10 +61,20 @@ public class AgendaManager {
 		return listeAgendasDate;
 	}
 	
+	/**
+	 * ajout d'un nouveau rdv dans l'agenda
+	 * @param data
+	 * @throws DALException
+	 */
 	public void addAgenda(Agenda data) throws DALException{
 		daoAgenda.insert(data);
 	}
 	
+	/**
+	 * suppression d'un rdv dans l'agenda
+	 * @param data
+	 * @throws DALException
+	 */
 	public void deleteAgenda(Agenda data) throws DALException{
 		daoAgenda.delete(data);
 	}

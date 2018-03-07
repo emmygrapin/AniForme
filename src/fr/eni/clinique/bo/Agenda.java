@@ -1,6 +1,6 @@
 package fr.eni.clinique.bo;
 
-import java.sql.Timestamp;
+
 import java.util.Date;
 
 
@@ -32,6 +32,10 @@ public class Agenda {
 	}
 	public void setDateRdv(Date dateRdv) {
 		this.dateRdv = dateRdv;
+	}
+	@Override
+	public String toString() {
+		return "Agenda [personnel=" + personnel + ", animal=" + animal + ", dateRdv=" + dateRdv + "]";
 	}
 	
 	
