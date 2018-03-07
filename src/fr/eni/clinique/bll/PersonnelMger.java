@@ -30,6 +30,7 @@ public class PersonnelMger {
 		}
 		return _instance;		
 	}
+	
 	// Méthode pour visualiser tout le personnel
 	public List<Personnel> getPersonnels() {
 		List<Personnel> personnels = null;
@@ -42,6 +43,20 @@ public class PersonnelMger {
 		return personnels;
 		
 	}
+	
+	// Méthode pour visualiser les personnels avec le role veterinaire.
+		public List<Personnel> getVeterinaires() {
+			List<Personnel> personnels = null;
+			try {
+				personnels = daoPersonnel.selectVeto();
+			} catch (DALException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return personnels;
+			
+		}
+	
 	// Méthode pour supprimer un personnel
 	public void deletePersonnel(int codePerso) {
 		try {

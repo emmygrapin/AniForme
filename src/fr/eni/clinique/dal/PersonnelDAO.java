@@ -14,6 +14,8 @@ public Personnel selectById(int codePerso) throws DALException;
 	
 	public List<Personnel> selectAll() throws DALException;
 	
+	public List<Personnel> selectVeto() throws DALException;
+	
 	public void insert(Personnel data) throws DALException;
 	
 	public void delete(int codePerso) throws DALException;

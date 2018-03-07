@@ -23,6 +23,8 @@ public class PersonnelDAOJdbcImpl implements PersonnelDAO {
 			+ " from Personnels where CodePers = ?";
 	private static final String sqlSelectAll = "select CodePers, Nom, MotPasse, Role, Archive"
 			+ " from Personnels where Archive = 0";
+	private static final String sqlSelectVeto = "select CodePers, Nom, MotPasse, Role, Archive"
+			+ " from Personnels where Archive = 0 and Role = 'VET'";
 	private static final String sqlInsert = "insert into Personnels(Nom, MotPasse, Role, Archive) values(?,?,?,?)";
 	private static final String sqlDelete = "delete from client where CodePers = ?";
 	private static final String sqlUpdateMdp = "update Personnels set MotPasse=? where CodePers =?";
@@ -93,6 +95,42 @@ public class PersonnelDAOJdbcImpl implements PersonnelDAO {
 			cnx = getConnection();
 			rqt = cnx.createStatement();
 			rs = rqt.executeQuery(sqlSelectAll);
+			Personnel personnel = null;
+			while (rs.next()) {
+				personnel = new Personnel(rs.getInt("CodePers"), rs.getString("Nom"), rs.getString("MotPasse"),
+						rs.getString("Role"), rs.getBoolean("Archive"));
+
+				personnels.add(personnel);
+			}
+		} catch (SQLException e) {
+			throw new DALException("selectAll failed ", e);
+		} finally {
+			try {
+
+				if (rqt != null) {
+					rqt.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			closeConnection();
+		}
+		return personnels;
+	}
+	
+	/**
+	 * selectionne tout le personnel qui n'est pas archivé
+	 */
+	@Override
+	public List<Personnel> selectVeto() throws DALException {
+		Connection cnx = null;
+		Statement rqt = null;
+		ResultSet rs = null;
+		List<Personnel> personnels = new ArrayList<Personnel>();
+		try {
+			cnx = getConnection();
+			rqt = cnx.createStatement();
+			rs = rqt.executeQuery(sqlSelectVeto);
 			Personnel personnel = null;
 			while (rs.next()) {
 				personnel = new Personnel(rs.getInt("CodePers"), rs.getString("Nom"), rs.getString("MotPasse"),
