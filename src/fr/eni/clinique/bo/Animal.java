@@ -136,6 +136,20 @@ public class Animal {
 		this.archive = archive;
 	}
 
+	public String getSexeToString() {
+		String nomSexe;
+			if (sexe.equals("M")) { 
+				nomSexe = "Mâle";
+			} else if (sexe.equals("F")) {
+				nomSexe = "Femelle";			
+			} else if (sexe.equals("H")){
+				nomSexe = "Hermaphrodite";
+			} else {
+				nomSexe = "Hermaphrodite";
+			}
+		
+		return  nomSexe;
+	}
 
 	@Override
 	public String toString() {
