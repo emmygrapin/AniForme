@@ -1,11 +1,9 @@
-package fr.eni.clinique.ihm.exempleMDI;
+package fr.eni.clinique.ihm.ecranPrincipal;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
@@ -100,7 +98,6 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 				{
 					ecran.setVisible(true);
 				}
-				
 			}
 		});
 
