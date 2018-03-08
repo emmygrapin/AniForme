@@ -24,7 +24,7 @@ import fr.eni.clinique.bll.PersonnelMger;
 import fr.eni.clinique.bo.Personnel;
 import fr.eni.clinique.dal.DALException;
 import fr.eni.clinique.dal.DAOFactory;
-import fr.eni.clinique.ihm.ApplyController;
+
 
 public class PersonnelGestion extends JInternalFrame {
 
@@ -40,8 +40,6 @@ public class PersonnelGestion extends JInternalFrame {
 		super("Gestion du personnel", true, true, true, true);
 		this.parent = parent;
 
-		// PersonnelController personnelController =
-		// PersonnelController.getinstance();
 		// Réglage de la taille du conteneur
 		this.setSize(900, 800);
 
@@ -159,13 +157,13 @@ public class PersonnelGestion extends JInternalFrame {
 				try {
 					if (tablePersonnel.getPersonnelSelect() != null) {
 						int option = alert.showConfirmDialog(null,
-								"Etes-vous sûr(e) de vouloir archiver cet utilisateur?", "Confirmation",
+								"Etes-vous sûr(e) de vouloir supprimer cet utilisateur?", "Confirmation",
 								JOptionPane.YES_NO_OPTION);
 						if (option == JOptionPane.OK_OPTION) {
 							int identifiant = tablePersonnel.getPersonnelSelect().getCodePerso();
 							Personnel personnel = DAOFactory.getPersonnelDAO().selectById(identifiant);
 							PersonnelMger.getInstance().updateIsArchive(personnel);
-							alert.showMessageDialog(null, "L'utilisateur a bien été archivé", "Information",
+							alert.showMessageDialog(null, "L'utilisateur a bien été supprimé", "Information",
 									JOptionPane.INFORMATION_MESSAGE);
 							refreshTablePersonnels();
 							tablePersonnel.setPersonnelSelect(null);
