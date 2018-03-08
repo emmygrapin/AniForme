@@ -80,25 +80,27 @@ public class AgendaGestion extends JInternalFrame implements ActionListener{
 	// Tableau de rdv pour un vétérinaire
 	public TableAgenda getTableAgenda() {
 
-		// if (tableAgenda == null) {
+	if (tableAgenda == null) {
 		Personnel premierVeterinaireListe = PersonnelMger.getInstance().getVeterinaires().get(0);
 		if (premierVeterinaireListe != null) {
-			tableAgenda = new TableAgenda(premierVeterinaireListe.getCodePerso());
+			tableAgenda = new TableAgenda(premierVeterinaireListe);
 			tableAgenda.setFillsViewportHeight(true);
 			tableAgenda.setPreferredScrollableViewportSize(new Dimension(500, 200));
 		}
-
-		// }
+		else {
+			
+		}
+	}
 		return tableAgenda;
 	}
 	// Permet de choisir le vétérinaire dont on veut afficher le planning
 	public JComboBox getChoixVeterinaire() {
-		Vector<String> veterinaires = new Vector<String>();
+		Vector<Personnel> veterinaires = new Vector<Personnel>();
 
 			List<Personnel> listeVeto = PersonnelMger.getInstance().getVeterinaires();
 
 			for (Personnel veto : listeVeto) {
-				veterinaires.add(veto.getNom());
+				veterinaires.add(veto);
 			}
 
 		if (this.choixVeterinaire == null) {
@@ -134,6 +136,8 @@ public class AgendaGestion extends JInternalFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
-		
+		 Personnel veterinaire = (Personnel) choixVeterinaire.getSelectedItem();
+		tableAgenda.setPersonnel(veterinaire);
+	
 	}
 }

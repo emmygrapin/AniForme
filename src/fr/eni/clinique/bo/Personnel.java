@@ -83,8 +83,7 @@ public class Personnel {
 
 	@Override
 	public String toString() {
-		return "Personnels [codePerso=" + codePerso + ", nom=" + nom + ", motDePasse=" + motDePasse + ", role=" + role
-				+ ", archive=" + archive + "]";
+		return nom;
 	}
 
 }

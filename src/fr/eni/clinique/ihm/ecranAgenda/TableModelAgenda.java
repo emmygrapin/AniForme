@@ -63,6 +63,7 @@ public class TableModelAgenda extends AbstractTableModel {
 		return ret;
 	}
 
+	// récupération de l'animal dans une ligne du tableau Agenda
 	public Animal selectAnimal(int rowIndex) {
 		Agenda rdv = listeAgendas.get(rowIndex);
 		Animal animal = rdv.getAnimal();

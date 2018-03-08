@@ -18,12 +18,14 @@ public class TableAgenda extends JTable implements MouseListener {
 	private Animal animalRdvSelect;
 
 	private TableModelAgenda tableModAgenda;
-	
-	public TableAgenda(int codePerso){
+	private Personnel personnel;
+
+
+	public TableAgenda(Personnel perso){
 		AgendaManager agendaManager = AgendaManager.getInstance();
 		List<Agenda> listeAgendas = new ArrayList<>();
 		try {
-			listeAgendas = agendaManager.getAgendasParVeto(codePerso);
+			listeAgendas = agendaManager.getAgendasParVeto(perso.getCodePerso());
 		
 		tableModAgenda = new TableModelAgenda(listeAgendas);
 		tableModAgenda.getColumnName(0);
@@ -80,5 +82,19 @@ public class TableAgenda extends JTable implements MouseListener {
 
 	public void setAnimalRdvSelect(Animal animalRdvSelect) {
 		this.animalRdvSelect = animalRdvSelect;
+	}
+	
+	public void setPersonnel(Personnel personnel) {
+		this.personnel = personnel;
+		List<Agenda> listeAgendas = new ArrayList<>();
+		AgendaManager agendaManager = AgendaManager.getInstance();
+		try {
+			listeAgendas = agendaManager.getAgendasParVeto(personnel.getCodePerso());
+			tableModAgenda.setListeAgendas(listeAgendas);
+		} catch (DALException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 }
