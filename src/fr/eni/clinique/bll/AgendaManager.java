@@ -33,7 +33,7 @@ public class AgendaManager {
 	 * @return
 	 */
 	public List<Agenda> getAgendasParVeto(int codeVeto)throws DALException{
-		List<Agenda> listeAgendasVeto = null;
+		List<Agenda> listeAgendasVeto = new ArrayList<Agenda>();
 		try{
 			listeAgendasVeto = daoAgenda.selectByVeterinaire(codeVeto);
 		}

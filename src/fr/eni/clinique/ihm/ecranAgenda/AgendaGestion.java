@@ -14,14 +14,16 @@ import java.util.Vector;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import java.util.Calendar;
 
-
+import org.jdatepicker.impl.DateComponentFormatter;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilCalendarModel;
 import org.jdatepicker.impl.UtilDateModel;
 
 import fr.eni.clinique.bll.AgendaManager;
@@ -66,7 +68,7 @@ public class AgendaGestion extends JInternalFrame implements ActionListener{
 		gbc.gridy = 0;
 		panelGestionAgendas.add(getChoixVeterinaire(), gbc);
 		gbc.gridx = 1;
-		panelGestionAgendas.add(getFieldDate(), gbc);
+		panelGestionAgendas.add(getDatePanel(), gbc);
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.gridwidth =2;
@@ -79,9 +81,9 @@ public class AgendaGestion extends JInternalFrame implements ActionListener{
 	public TableAgenda getTableAgenda() {
 
 		// if (tableAgenda == null) {
-		Personnel premierVeterinaireListe = PersonnelMger.getInstance().getPersonnels().get(0);
+		Personnel premierVeterinaireListe = PersonnelMger.getInstance().getVeterinaires().get(0);
 		if (premierVeterinaireListe != null) {
-			tableAgenda = new TableAgenda(premierVeterinaireListe.getCodePerso(), new Date());
+			tableAgenda = new TableAgenda(premierVeterinaireListe.getCodePerso());
 			tableAgenda.setFillsViewportHeight(true);
 			tableAgenda.setPreferredScrollableViewportSize(new Dimension(500, 200));
 		}
@@ -109,17 +111,23 @@ public class AgendaGestion extends JInternalFrame implements ActionListener{
 	}
 	
 	/**
-	 * Créer et/ou retourne un champ Nom
-	 * @return JTextField
+	 * 
+	 * @return
 	 */
 	private JPanel getDatePanel() {
-		UtilDateModel model = new UtilDateModel();
-       
-        JDatePanelImpl datePanel = new JDatePanelImpl(model);
-        JDatePickerImpl datePicker = new JDatePickerImpl(datePanel);
-        dateAgenda.add(datePicker);
-        
-		;
+
+		UtilCalendarModel model = new UtilCalendarModel();
+
+		Properties p = new Properties();
+		p.put("text.today", "Today");
+		p.put("text.month", "Month");
+		p.put("text.year", "Year");
+
+		JDatePanelImpl dateAgenda = new JDatePanelImpl(model, p);
+
+		JDatePickerImpl datePicker = new JDatePickerImpl(dateAgenda, new DateComponentFormatter());
+		
+		return datePicker;
 	}
 	
 	

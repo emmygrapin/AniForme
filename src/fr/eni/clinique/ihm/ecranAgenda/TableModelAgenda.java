@@ -7,21 +7,22 @@ import javax.swing.table.AbstractTableModel;
 import fr.eni.clinique.bo.Agenda;
 import fr.eni.clinique.bo.Animal;
 
-public class TableModelAgenda extends AbstractTableModel{
-	private List<Agenda> listeAgendas ;
+public class TableModelAgenda extends AbstractTableModel {
+	private List<Agenda> listeAgendas;
 	private Agenda agenda;
-	
-	private String[] column_Names = {"Heure","Nom du client","Race","Espèce"};
-	
-	public TableModelAgenda(List<Agenda> listeAgendas){
+
+	private String[] column_Names = { "Heure", "Nom du client", "Animal", "Race" };
+
+	public TableModelAgenda(List<Agenda> listeAgendas) {
 		this.listeAgendas = listeAgendas;
 	}
-	
+
 	public void setListeAgendas(List<Agenda> listeAgendas) {
 		this.listeAgendas = listeAgendas;
 		// lorsqu'un élément du tableau change
 		fireTableDataChanged();
 	}
+
 	/**
 	 * Combien de colonnes vont être affichées dans le tableau
 	 */
@@ -35,6 +36,7 @@ public class TableModelAgenda extends AbstractTableModel{
 	@Override
 	public int getRowCount() {
 		// TODO Auto-generated method stub
+
 		return listeAgendas.size();
 	}
 
@@ -53,22 +55,22 @@ public class TableModelAgenda extends AbstractTableModel{
 			ret = listeAgendas.get(rowIndex).getAnimal().getNomAnimal();
 			break;
 		case 3:
-			ret =listeAgendas.get(rowIndex).getAnimal().getRace();
+			ret = listeAgendas.get(rowIndex).getAnimal().getRace().getRace();
 			break;
 		default:
-				break;
+			break;
 		}
 		return ret;
 	}
+
 	public Animal selectAnimal(int rowIndex) {
 		Agenda rdv = listeAgendas.get(rowIndex);
 		Animal animal = rdv.getAnimal();
 		return animal;
 	}
-	
-	
+
 	public String getColumnName(int column) {
 		return column_Names[column];
 	}
-	
+
 }

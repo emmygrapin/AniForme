@@ -16,17 +16,15 @@ import fr.eni.clinique.dal.DALException;
 
 public class TableAgenda extends JTable implements MouseListener {
 	private Animal animalRdvSelect;
+
 	private TableModelAgenda tableModAgenda;
 	
-	public TableAgenda(int codePerso,Date dateRdv){
+	public TableAgenda(int codePerso){
 		AgendaManager agendaManager = AgendaManager.getInstance();
 		List<Agenda> listeAgendas = new ArrayList<>();
-		try{
-
-		listeAgendas = agendaManager.getAgendasParVetoParDate(codePerso, dateRdv);}
-		catch(DALException e){
-			e.printStackTrace();
-			}
+		try {
+			listeAgendas = agendaManager.getAgendasParVeto(codePerso);
+		
 		tableModAgenda = new TableModelAgenda(listeAgendas);
 		tableModAgenda.getColumnName(0);
 		tableModAgenda.getColumnName(1);
@@ -36,6 +34,10 @@ public class TableAgenda extends JTable implements MouseListener {
 		 //affecte dans le modèle
 		setModel(tableModAgenda);
 		this.addMouseListener(this);
+		} catch (DALException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -70,5 +72,13 @@ public class TableAgenda extends JTable implements MouseListener {
 	
 	public TableModelAgenda getTableModAgenda() {
 		return tableModAgenda;
+	}
+	
+	public Animal getAnimalRdvSelect() {
+		return animalRdvSelect;
+	}
+
+	public void setAnimalRdvSelect(Animal animalRdvSelect) {
+		this.animalRdvSelect = animalRdvSelect;
 	}
 }

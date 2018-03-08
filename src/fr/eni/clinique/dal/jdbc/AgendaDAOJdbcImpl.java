@@ -20,10 +20,10 @@ import fr.eni.clinique.dal.DAOFactory;
 import fr.eni.clinique.dal.PersonnelDAO;
 
 public class AgendaDAOJdbcImpl implements AgendaDAO {
-	private static final String sqlSelectByVeterinaire = "select CodeAnimal, DateRdv, CodeVeto"
+	private static final String sqlSelectByVeterinaire = "select CodeAnimal, DateRdv, CodeVeto "
 			+ "from Agendas where CodeVeto = ?";
 
-	private static final String sqlSelectByVeterinaireByDate = "select CodeAnimal, DateRdv, CodeVeto"
+	private static final String sqlSelectByVeterinaireByDate = "select CodeAnimal, DateRdv, CodeVeto "
 			+ "from Agendas where CodeVeto = ? and Date = ?";
 
 	private static final String sqlInsert = "insert into Agendas (CodeVeto, DateRdv, CodeAnimal) values(?,?,?)";
@@ -59,15 +59,17 @@ public class AgendaDAOJdbcImpl implements AgendaDAO {
 		PreparedStatement rqt = null;
 		ResultSet rs = null;
 		List<Agenda> agendas = new ArrayList<Agenda>();
-		PersonnelDAO personnelDAO = DAOFactory.getPersonnelDAO();
-		AnimalDAO animalDAO = DAOFactory.getAnimalDAO();
+		
 
 		try {
 			cnx = getConnection();
 			rqt = cnx.prepareStatement(sqlSelectByVeterinaire);
+			Agenda agenda = null;
+			PersonnelDAO personnelDAO = DAOFactory.getPersonnelDAO();
+			AnimalDAO animalDAO = DAOFactory.getAnimalDAO();
+			
 			rqt.setInt(1, codeVeto);
 			rs = rqt.executeQuery();
-			Agenda agenda = null;
 			while (rs.next()) {
 				agenda = new Agenda(personnelDAO.selectById(rs.getInt("CodeVeto")), rs.getTimestamp("DateRdv"),
 						animalDAO.selectById(rs.getInt("CodeAnimal")));
