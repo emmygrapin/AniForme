@@ -16,7 +16,6 @@ import javax.swing.JTextField;
 
 import fr.eni.clinique.bll.PersonnelMger;
 import fr.eni.clinique.bo.Personnel;
-import fr.eni.clinique.ihm.ApplyController;
 /**
  * boîte de dialogue du changement de mot de passe utilisateur
  * @author egrapin2017

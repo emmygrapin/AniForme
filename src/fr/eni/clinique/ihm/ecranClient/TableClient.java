@@ -11,7 +11,7 @@ import fr.eni.clinique.bll.PersonnelMger;
 import fr.eni.clinique.bo.Client;
 import fr.eni.clinique.bo.Personnel;
 import fr.eni.clinique.dal.DALException;
-import fr.eni.clinique.ihm.exempleMDI.EcranPrincipalClinique;
+import fr.eni.clinique.ihm.ecranPrincipal.EcranPrincipalClinique;
 
 public class TableClient extends JTable {
 

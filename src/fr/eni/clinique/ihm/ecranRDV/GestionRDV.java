@@ -1,14 +1,19 @@
 package fr.eni.clinique.ihm.ecranRDV;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
+import java.util.TimeZone;
 import java.util.Vector;
 
 import javax.swing.DefaultComboBoxModel;
@@ -17,38 +22,47 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import org.jdatepicker.JDatePanel;
 import org.jdatepicker.impl.DateComponentFormatter;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilCalendarModel;
 import org.jdatepicker.impl.UtilDateModel;
 
+import fr.eni.clinique.bll.AgendaManager;
 import fr.eni.clinique.bll.AnimalManager;
 import fr.eni.clinique.bll.ClientManager;
 import fr.eni.clinique.bll.PersonnelMger;
+import fr.eni.clinique.bo.Agenda;
 import fr.eni.clinique.bo.Animal;
 import fr.eni.clinique.bo.Client;
 import fr.eni.clinique.bo.Personnel;
 import fr.eni.clinique.dal.DALException;
+import fr.eni.clinique.ihm.ecranAgenda.TableAgenda;
+import fr.eni.clinique.ihm.ecranClient.AjoutClient;
+import fr.eni.clinique.ihm.ecranClient.InfosClient;
 
 public class GestionRDV extends JInternalFrame  implements ActionListener {
 	
 	
-	private JTextField txtNom, txtPrenom, txtAdresse, txtAdresse2, txtVille, txtCP, txtPhone, txtEmail, txtAssurance;
-	private JTextArea txtRemarque;
-	private JButton btnValider, btnAnnuler, btnArchiver;
-	private JComboBox cmbClient, cmbAnimal, cmbVeto;
-	private Client clientActif;
+	private JButton btnValider, btnDelete;
+	private JComboBox cmbClient, cmbAnimal, cmbVeto, cmbHours, cmbMinutes;
+
 	private List<Integer> clientsID;
-	Hashtable<Integer, Vector<String>> cbxItems;
+	private List<Personnel> personnels;
+	private JDatePickerImpl datePicker;
+	Hashtable<Integer, Vector<Animal>> cbxItems;
+	private TableAgenda tableAgenda;
 	
 	public GestionRDV(){
 		
-		super("Création Rendez-vous", true, true, true,true);
+		super("Prise de Rendez-vous", true, true, true,true);
 		
 		// Réglage de la taille du conteneur
 		this.setSize(900, 800);
@@ -80,6 +94,20 @@ public class GestionRDV extends JInternalFrame  implements ActionListener {
 		gbc.gridx = 2;
 		panelRDV.add(moduleQuand(), gbc);
 		
+		gbc.gridy = 2;
+		gbc.gridx = 0;
+		gbc.gridwidth = 3;
+		panelRDV.add(moduleAgenda(), gbc);
+		
+		gbc.gridy = 3;
+		gbc.gridx = 1;
+		gbc.gridwidth = 1;
+		panelRDV.add(getBtnSave(), gbc);
+		
+		gbc.gridy = 3;
+		gbc.gridx = 2;
+		gbc.gridwidth = 1;
+		panelRDV.add(getBtnDelete(), gbc);
 		
 		return panelRDV;
 	}
@@ -138,7 +166,9 @@ public class GestionRDV extends JInternalFrame  implements ActionListener {
 
 		JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
 
-		JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateComponentFormatter());
+		datePicker = new JDatePickerImpl(datePanel, new DateComponentFormatter());
+		
+		datePicker.addActionListener(this);
 		
 		JPanel modulePar = new JPanel();
 		modulePar.setLayout(new GridBagLayout());
@@ -149,12 +179,56 @@ public class GestionRDV extends JInternalFrame  implements ActionListener {
 		gbc.insets = new Insets(5, 30, 5, 5);
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		modulePar.add(new JLabel("Vétérinaire : "), gbc);
+		modulePar.add(new JLabel("Date : "), gbc);
 		gbc.gridy = 1;
 		modulePar.add(datePicker, gbc);
+		gbc.gridy = 2;
+		modulePar.add(addcmbHeures(), gbc);
+		gbc.gridx = 1;
+		gbc.gridy = 2;
+		modulePar.add(addcmbMinutes(), gbc);
 		
 		return modulePar;
 	}
+	
+	public JPanel moduleAgenda()
+	{		
+		JPanel moduleAgenda = new JPanel();
+		moduleAgenda.setLayout(new GridBagLayout());
+		
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.insets = new Insets(5, 5, 5, 5);
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		moduleAgenda.add(new JScrollPane(getTableAgenda()), gbc);
+		
+		
+		return moduleAgenda;
+	}
+	
+	//-------------------------Table-----------------------------------------------
+	
+	public TableAgenda getTableAgenda() {
+
+		if (tableAgenda == null) {
+			Personnel premierVeterinaireListe = PersonnelMger.getInstance().getVeterinaires().get(0);
+			if (premierVeterinaireListe != null) {
+				tableAgenda = new TableAgenda(premierVeterinaireListe);
+				tableAgenda.setFillsViewportHeight(true);
+				tableAgenda.setPreferredScrollableViewportSize(new Dimension(500, 200));
+			}
+			else {
+				
+			}
+		}
+			return tableAgenda;
+		}
+	
+	
+	
+	
+	
+	//--------------------------------------------------------------------------
 	
 	
 	public JComboBox addcmbClient()
@@ -185,13 +259,15 @@ public class GestionRDV extends JInternalFrame  implements ActionListener {
 	
 	public JComboBox addcmbVeto()
 	{
-		Vector<String> vetos = new Vector<String>();
+		Vector<Personnel> vetos = new Vector<Personnel>();
+		personnels = new ArrayList<Personnel>();
 		
 		if ( this.cmbVeto == null ) {
 			List<Personnel> listeVetos = PersonnelMger.getInstance().getVeterinaires();
 			
 			for (Personnel veto : listeVetos) {
-				vetos.add(veto.getNom());
+				vetos.add(veto);
+				personnels.add(veto);
 			}
 			
 			this.cmbVeto = new JComboBox(vetos);
@@ -199,6 +275,38 @@ public class GestionRDV extends JInternalFrame  implements ActionListener {
 		}
 
 		return this.cmbVeto;	
+	}
+	
+	
+	public JComboBox addcmbHeures()
+	{
+		Vector<Integer> heures = new Vector<Integer>();
+		
+		if ( this.cmbHours == null ) {
+			
+			for (int i = 0; i < 24; i ++) {
+				heures.add(i);
+			}
+			
+			this.cmbHours = new JComboBox(heures);
+		}
+
+		return this.cmbHours;	
+	}
+	
+	
+	public JComboBox addcmbMinutes()
+	{
+		Vector<Integer> minutes = new Vector<Integer>();
+				
+		minutes.add(00);
+		minutes.add(15);
+		minutes.add(30);
+		minutes.add(45);
+		
+		this.cmbMinutes = new JComboBox(minutes);
+
+		return this.cmbMinutes;	
 	}
 
 	
@@ -221,12 +329,12 @@ public class GestionRDV extends JInternalFrame  implements ActionListener {
 			listeClient = ClientManager.getInstance().getClients();
 			for (Client client : listeClient) {
 				
-				Vector<String> animaux = new Vector<String>();
+				Vector<Animal> animaux = new Vector<Animal>();
 				
 				List<Animal> AnimauxbyClient = AnimalManager.getInstance().getAnimauxByClient(client);
 				
 				for (Animal unAnimal : AnimauxbyClient) {
-					animaux.add(unAnimal.getNomAnimal());
+					animaux.add(unAnimal);
 				}
 				
 				cbxItems.put(client.getCodeClient(), animaux);
@@ -252,6 +360,124 @@ public class GestionRDV extends JInternalFrame  implements ActionListener {
 			cmbAnimal.setModel(new DefaultComboBoxModel((Vector<String>) obj));
 		}
 		
+		
+		//Traitement de la date
+		
+		int years = datePicker.getModel().getYear();
+		int days = datePicker.getModel().getDay();
+		int mounth = datePicker.getModel().getMonth();
+		
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(0);
+		cal.setTimeZone(new java.util.SimpleTimeZone(0, "TS"));
+		cal.set(years, mounth, days);
+		Date date = cal.getTime();
+
+		Personnel veterinaire = (Personnel) cmbVeto.getSelectedItem();
+		tableAgenda.setInfos(veterinaire, date);
+		
+		
+		
+	}
+	
+	public void  refreshTable ()
+	{
+		int index = cmbClient.getSelectedIndex();
+		
+		int clientID = clientsID.get(index);
+		
+		Object obj = cbxItems.get(clientID);
+		
+		if ( obj == null) {
+			cmbAnimal.setModel(new DefaultComboBoxModel());
+		} else {
+			cmbAnimal.setModel(new DefaultComboBoxModel((Vector<String>) obj));
+		}
+		
+		
+		//Traitement de la date
+		
+		int years = datePicker.getModel().getYear();
+		int days = datePicker.getModel().getDay();
+		int mounth = datePicker.getModel().getMonth();
+		
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(0);
+		cal.setTimeZone(new java.util.SimpleTimeZone(0, "TS"));
+		cal.set(years, mounth, days);
+		Date date = cal.getTime();
+	
+		Personnel veterinaire = (Personnel) cmbVeto.getSelectedItem();
+		tableAgenda.setInfos(veterinaire, date);
+	}
+	
+	
+	public JButton getBtnSave()
+	{
+		btnValider = new JButton("Valider");
+		btnValider.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				if(cmbAnimal.getSelectedItem() == null)
+				{
+					
+				}
+				else
+				{
+					int index = cmbVeto.getSelectedIndex();
+					int years = datePicker.getModel().getYear();
+					int days = datePicker.getModel().getDay();
+					int mounth = datePicker.getModel().getMonth();
+					int hours = (int)cmbHours.getSelectedItem() - 1;
+					int minutes = (int)cmbMinutes.getSelectedItem();
+
+					Calendar cal = Calendar.getInstance();
+					cal.setTimeInMillis(0);
+					cal.setTimeZone(new java.util.SimpleTimeZone(0, "TS"));
+					cal.set(years, mounth, days, hours, minutes, 00);
+					Date date2 = cal.getTime();
+					
+					Agenda agenda = new Agenda(personnels.get(index), date2,(Animal)cmbAnimal.getSelectedItem());
+					try {
+						AgendaManager.getInstance().addAgenda(agenda);
+					} catch (DALException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					refreshTable();
+					
+				}
+			}
+		});
+	
+		return btnValider;
+	}
+	
+	public JButton getBtnDelete()
+	{
+
+		btnDelete = new JButton("Supprimer");
+		btnDelete.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				if (tableAgenda.getRdvSelect() != null)
+				{
+					try {
+						AgendaManager.getInstance().deleteAgenda(tableAgenda.getRdvSelect());
+					} catch (DALException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					refreshTable();
+				}
+			}
+		});
+	
+		return btnDelete;
 	}
 	
 	

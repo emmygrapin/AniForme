@@ -17,7 +17,6 @@ import javax.swing.JTextField;
 import fr.eni.clinique.bll.ClientManager;
 import fr.eni.clinique.bo.Client;
 import fr.eni.clinique.dal.DALException;
-import fr.eni.clinique.ihm.ApplyController;
 
 public class AjoutClient extends JDialog {
 

@@ -18,7 +18,7 @@ import javax.swing.JTextField;
 import fr.eni.clinique.bll.BLLException;
 import fr.eni.clinique.bll.LoginMger;
 import fr.eni.clinique.bo.Personnel;
-import fr.eni.clinique.ihm.exempleMDI.EcranPrincipalClinique;
+import fr.eni.clinique.ihm.ecranPrincipal.EcranPrincipalClinique;
 
 /**
  * 

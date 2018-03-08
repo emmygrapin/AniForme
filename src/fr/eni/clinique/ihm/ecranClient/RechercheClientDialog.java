@@ -20,7 +20,6 @@ import javax.swing.JTextField;
 import fr.eni.clinique.bll.ClientManager;
 import fr.eni.clinique.bo.Client;
 import fr.eni.clinique.dal.DALException;
-import fr.eni.clinique.ihm.exempleMDI.EcranPrincipalClinique;
 
 public class RechercheClientDialog extends JDialog{
 

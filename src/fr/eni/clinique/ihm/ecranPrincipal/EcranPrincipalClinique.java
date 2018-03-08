@@ -22,7 +22,7 @@ import fr.eni.clinique.ihm.login;
 import fr.eni.clinique.ihm.ecranAgenda.AgendaGestion;
 import fr.eni.clinique.ihm.ecranClient.InfosClient;
 import fr.eni.clinique.ihm.ecranPersonnel.PersonnelGestion;
-//import fr.eni.clinique.ihm.ecranRDV.GestionRDV;
+import fr.eni.clinique.ihm.ecranRDV.GestionRDV;
 
 
 public class EcranPrincipalClinique extends JFrame implements ActionListener {
@@ -38,7 +38,7 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 	private PersonnelGestion ecranPersonnelGest;
 	private Personnel personnelActif;
 	private AgendaGestion ecranAgendaGest;
-//	private GestionRDV ecranRDVGest;
+	private GestionRDV ecranRDVGest;
 	private InfosClient ecranClientGest;
 	private Client clientActif = null;
 	
@@ -62,10 +62,6 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 
 		// Barre de menus
 		setJMenuBar(getMenuBarre());
-		
-		//(écran enfant) faire pour tous les écrans
-	
-		//desktopPane.add(getEcranAnimalGestion());
 
 
 	}
@@ -73,7 +69,7 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 	public void chargerpages(){
 		desktopPane.add(getEcranPersonnelGestion());		
 		desktopPane.add(getEcranInfosGestion());
-		//desktopPane.add(getEcranRDVGestion());
+		desktopPane.add(getEcranRDVGestion());
 		desktopPane.add(getEcranAgendaGestion());
 
 	}
@@ -91,17 +87,15 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 	// Lancement de l'application
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
-
-		
-
+			
 //			@Override
 			public void run() {
 				
 			EcranPrincipalClinique ecran;
 			ecran = EcranPrincipalClinique.getInstance();
 //			
-//				//TODO dialog authentification
-				login loginEcran = new login(ecran);
+//			//TODO dialog authentification
+			login loginEcran = new login(ecran);
 //				
 			if(ecran.personnelActif != null)
 			{
@@ -221,7 +215,7 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 			getEcranInfosGestion().setVisible(true);
 			break;
 		case "rendezvous":
-//			getEcranRDVGestion().setVisible(true);
+			getEcranRDVGestion().setVisible(true);
 			break;
 		default:
 			System.out.println("Probleme e=" + e);
@@ -272,18 +266,12 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 	}
 	
 	
-//	public GestionRDV getEcranRDVGestion() {
-//		if(ecranRDVGest == null){
-//			try {
-//				ecranRDVGest  = new GestionRDV();
-//
-//			} catch (DALException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
-//		return ecranRDVGest;
-//	}
+	public GestionRDV getEcranRDVGestion() {
+		if(ecranRDVGest == null){
+			ecranRDVGest  = new GestionRDV();
+		}
+		return ecranRDVGest;
+	}
 		
 	public AgendaGestion getEcranAgendaGestion(){
 		if(ecranAgendaGest ==  null){
@@ -306,22 +294,7 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 		ecranClientGest.refresh();
 	}
 	
-	/**
-	 * Getter 
-	 * @return
-	 */
-//	public AnimalGestion getEcranAnimalGestion() {
-//		if(ecranAnimalGest == null){
-//			try {
-//				ecranAnimalGest  = new AnimalGestion(this);
-//			} catch (DALException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
-//		return ecranAnimalGest;
-//	}
-	
+
 	public void setPersonnelActif(Personnel personnel)
 	{
 		personnelActif = personnel;	

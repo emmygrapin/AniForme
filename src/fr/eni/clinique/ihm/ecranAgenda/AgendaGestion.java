@@ -153,7 +153,7 @@ public class AgendaGestion extends JInternalFrame implements ActionListener {
 		p.put("text.year", "Year");
 
 		JDatePanelImpl dateAgenda = new JDatePanelImpl(model, p);
-		JDatePickerImpl datePicker = new JDatePickerImpl(dateAgenda, new DateComponentFormatter());
+		datePicker = new JDatePickerImpl(dateAgenda, new DateComponentFormatter());
 		datePicker = new JDatePickerImpl(dateAgenda, new DateComponentFormatter());
 		
 		datePicker.addActionListener(this);
@@ -210,7 +210,7 @@ public class AgendaGestion extends JInternalFrame implements ActionListener {
 		Date date = cal.getTime();
 
 		Personnel veterinaire = (Personnel) choixVeterinaire.getSelectedItem();
-		tableAgenda.setPersonnel(veterinaire);
+
 		tableAgenda.setInfos(veterinaire, date);
 	
 	}

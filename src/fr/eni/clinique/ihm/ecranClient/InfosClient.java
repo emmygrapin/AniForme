@@ -27,8 +27,9 @@ public class InfosClient extends JInternalFrame{
 
 	private JTextField txtNom, txtPrenom, txtAdresse, txtAdresse2, txtVille, txtCP, txtPhone, txtEmail, txtAssurance;
 	private JTextArea txtRemarque;
-	private JButton btnValider, btnAnnuler, btnArchiver;
+	private JButton btnValider, btnArchiver;
 	private Client clientActif;
+	private JOptionPane alert;
 	
 	public InfosClient() throws DALException{
 		
@@ -254,26 +255,6 @@ public class InfosClient extends JInternalFrame{
 		});
 		return routingButton;	
 	}
-
-
-	public JButton addModifierButton(Client client){
-		JButton modifierButton = new JButton("Ouvrir");
-		modifierButton.addActionListener(new ActionListener(){
-	
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				List<Client> listeClient = new ArrayList<>();
-				listeClient.add(client);
-				try {
-					ApplyController.getInstance().move("globalClient", listeClient);
-				} catch (DALException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		});
-		return modifierButton;	
-	}
 	
 
 	public JButton getBtnSave(boolean newClient, Client upclient)
@@ -286,7 +267,7 @@ public class InfosClient extends JInternalFrame{
 			{
 				if(txtNom.getText().isEmpty() || txtPrenom.getText().isEmpty()  || txtAdresse.getText().isEmpty() || txtVille.getText().isEmpty() || txtCP.getText().isEmpty() || txtPhone.getText().isEmpty())
 				{
-					
+					alert.showMessageDialog(null, "Veuillez saisir toutes les informations.", "Erreur", JOptionPane.ERROR_MESSAGE);
 				}
 				else
 				{
@@ -313,29 +294,7 @@ public class InfosClient extends JInternalFrame{
 		return btnValider;
 	}
 
-//	public JButton getBtnCancel()
-//	{
-//		if(btnAnnuler == null)
-//		{
-//			btnAnnuler = new JButton("Annuler");
-//			btnAnnuler.addActionListener(new ActionListener() {
-//				
-//				@Override
-//				public void actionPerformed(ActionEvent e)
-//				{
-//					try {
-//						ApplyController.getInstance().move("globalClient", new ArrayList());
-//					} catch (DALException e1) {
-//						// TODO Auto-generated catch block
-//						e1.printStackTrace();
-//					}
-//				}
-//			});
-//		}
-//		return btnAnnuler;
-//	}
-		
-	
+
 	public JButton getBtnAjouter()
 	{
 		JButton routingButton = new JButton("Ajouter");

@@ -153,9 +153,7 @@ public class Animal {
 
 	@Override
 	public String toString() {
-		return "Animal :\n\t[codeAnimal=" + codeAnimal + ", nomAnimal=" + nomAnimal + ", sexe=" + sexe + ", couleur="
-				+ couleur + ", race=" + race + ", client=" + client + ", tatouage=" + tatouage + ", antecedents=" + antecedents
-				+ ", archive=" + archive  + "]\n";
+		return this.nomAnimal;
 	}
 	
 	
