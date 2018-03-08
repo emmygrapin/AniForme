@@ -17,6 +17,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -34,16 +35,17 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 	private JButton btnValider, btnAnnuler;
 	private JComboBox cbxSexe, cbxEspece, cbxRace;
 	private JLabel labelCode;
-	private Client client;
+	private Client clientActif;
 	private AnimalGestion parent;
 
+	private JOptionPane alert;
 	
 	Hashtable<String, Vector<String>> cbxItems;
 
 	public AjoutAnimalDialog(Client client,  AnimalGestion parent, Animal animal) {
 	
 	this.parent = parent;
-	this.client = client;
+	this.clientActif = client;
 	this.setTitle("Animaux");
 	this.setContentPane(viewNewAnimal(animal));
 	this.setSize(700, 800);
@@ -74,11 +76,10 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 		gbc.anchor = GridBagConstraints.CENTER;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		//gbc.gridwidth = 1;
 		panelGestAnim.add(viewButtons(animal), gbc);
 		
 		gbc.gridy = 1;
-		panelGestAnim.add(viewClient(client), gbc);
+		panelGestAnim.add(viewClient(clientActif), gbc);
 		
 		gbc.gridy = 2;
 		panelGestAnim.add(getFormNewAnimal(animal), gbc);
@@ -152,9 +153,6 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(5, 5, 5, 5);
 		
-//		Dimension dimension = new Dimension(700, 700);
-//		panelAnimal.setPreferredSize(dimension);
-		
 		// ligne "Code"
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -224,12 +222,18 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 				public void actionPerformed(ActionEvent e) {
 					
 					AnimalManager animalMgr = AnimalManager.getInstance();
-					if (txtNom.getText().isEmpty() || txtCouleur.getText().isEmpty() || txtTatouage.getText().isEmpty()) {
-						//TODO message champs vides
+					if (txtNom.getText().isEmpty() || txtCouleur.getText().isEmpty()) {
+						alert.showMessageDialog(null, "Les champs doivent être tous renseignés", "Erreur",
+								JOptionPane.ERROR_MESSAGE);
+						
 					} else {
+						if (txtTatouage.getText().isEmpty()) {
+							txtTatouage.setText("non tatoué");
+						}
+					
 						if (animal != null) {
 							try {
-								Animal newAnimal = newAnimal(client);
+								Animal newAnimal = newAnimal(clientActif);
 								newAnimal.setCodeAnimal(animal.getCodeAnimal());
 								animalMgr.update(newAnimal);
 							} catch (DALException e1) {
@@ -237,7 +241,7 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 								e1.printStackTrace();
 							}
 						} else {
-							Animal newAnimal = newAnimal(client);
+							Animal newAnimal = newAnimal(clientActif);
 							try {
 								animalMgr.addAnimal(newAnimal);
 							} catch (DALException e1) {
@@ -245,17 +249,37 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 								e1.printStackTrace();
 							}
 						}
+						parent.refreshTableAnimaux();
+						//ferme la fenêtre
+						AjoutAnimalDialog.this.dispose();
 					}
-					parent.refreshTableAnimaux();
-					
-					//ferme la fenêtre
-					AjoutAnimalDialog.this.dispose();
 				}
 			});
 		}
 		return this.btnValider;
 	}
 	
+	/**
+	 * Bouton qui annule l'ajout d'un animal. Retourne sur la liste d'animaux du client
+	 * @return JButton
+	 */ 
+	public JButton getBtnAnnuler()
+	{
+		if(this.btnAnnuler == null)
+		{
+			this.btnAnnuler = new JButton("Annuler");
+			this.btnAnnuler.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e)
+				{
+					AjoutAnimalDialog.this.dispose();
+				}
+			});
+		}
+		return this.btnAnnuler;
+	}
+
 	/**
 	 * Récupère les données de chaque champ et les stocke dans la base de données. 
 	 * Fonction appelé quand on déclenche le bouton de validation
@@ -281,26 +305,6 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 		return animal;
 	}
 	
-	/**
-	 * Bouton qui annule l'ajout d'un animal. Retourne sur la liste d'animaux du client
-	 * @return JButton
-	 */ 
-	public JButton getBtnAnnuler()
-	{
-		if(this.btnAnnuler == null)
-		{
-			this.btnAnnuler = new JButton("Annuler");
-			this.btnAnnuler.addActionListener(new ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e)
-				{
-					AjoutAnimalDialog.this.dispose();
-				}
-			});
-		}
-		return this.btnAnnuler;
-	}
 	
 	/**
 	 * Même action que la méthode actionPerformed appelée sans l'ActionListener
@@ -389,6 +393,7 @@ public class AjoutAnimalDialog extends JDialog implements ActionListener {
 		}
 		return this.txtCouleur;
 	}
+	
 	
 	/**
 	 * Composant qui contient les menus déroulant "Espèce" et "Race"

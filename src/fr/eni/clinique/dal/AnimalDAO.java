@@ -22,6 +22,8 @@ public interface AnimalDAO {
 	
 	public void updateIsArchive(Animal data) throws DALException;
 	
+	public void updateIsArchiveByClient(Client data) throws DALException;
+	
 	public List<Animal> selectByRace(String race) throws DALException;
 	
 	public List<Animal> selectByEspece(String espece) throws DALException;

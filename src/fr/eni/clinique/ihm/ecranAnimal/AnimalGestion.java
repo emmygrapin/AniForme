@@ -15,6 +15,7 @@ import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -27,16 +28,10 @@ import fr.eni.clinique.dal.DAOFactory;
 
 public class AnimalGestion implements ActionListener {
 
-	private JTextField txtNom, txtCouleur, txtTatouage;
-	private JButton btnValider, btnAnnuler, btnAjouter, btnEditer, btnSupprimer;
-	private JComboBox cbxSexe, cbxEspece, cbxRace;
-
-	Hashtable<String, Vector<String>> cbxItems;
+	private JButton btnAjouter, btnEditer, btnSupprimer;
 	private Client client;
-	private JButton btnAddAnimal;
-
 	private TableAnimal tableAnimal;
-
+	private static JOptionPane alert;
 	private static AnimalGestion _instance;
 
 	public AnimalGestion(Client client) throws DALException {
@@ -63,7 +58,7 @@ public class AnimalGestion implements ActionListener {
 	}
 
 	/**
-	 * Composant contenant les boutons "valider" et "annuler"
+	 * Composant contenant les boutons "Ajouter", "Supprimer" et "Editer"
 	 * 
 	 * @return JPanel
 	 */
@@ -163,19 +158,26 @@ public class AnimalGestion implements ActionListener {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-
+					
 					try {
 						if (tableAnimal.getAnimalSelect() != null) {
-							int codeAnimal = tableAnimal.getAnimalSelect().getCodeAnimal();
-							Animal animal = DAOFactory.getAnimalDAO().selectById(codeAnimal);
-							AnimalManager animalManager = AnimalManager.getInstance();
-							animalManager.updateIsArchive(animal);
-							refreshTableAnimaux();
+							int option = alert.showConfirmDialog(null,
+									"Etes-vous sûr(e) de vouloir supprimer cet animal ?", "Confirmation",
+									JOptionPane.YES_NO_OPTION);
+							if (option == JOptionPane.OK_OPTION) {
+								int codeAnimal = tableAnimal.getAnimalSelect().getCodeAnimal();
+								Animal animal = DAOFactory.getAnimalDAO().selectById(codeAnimal);
+								AnimalManager animalManager = AnimalManager.getInstance();
+								animalManager.updateIsArchive(animal);
+								alert.showMessageDialog(null, animal.getNomAnimal() + " a bien été supprimé", "Information",
+										JOptionPane.INFORMATION_MESSAGE);
+								refreshTableAnimaux();	
+							}
 						}
-
 					} catch (DALException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						alert.showMessageDialog(null, "L'animal n'a pas été correctement supprimé", "Erreur",
+								JOptionPane.ERROR_MESSAGE);
+		
 					}
 
 				}

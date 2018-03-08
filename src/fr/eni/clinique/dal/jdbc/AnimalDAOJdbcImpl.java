@@ -32,6 +32,7 @@ public class AnimalDAOJdbcImpl implements AnimalDAO{
 	private static final String sqlInsert = "insert into Animaux(NomAnimal, Sexe, Couleur, Race, Espece, CodeClient, Tatouage, Antecedents, Archive) values(?,?,?,?,?,?,?,?,?)";
 	private static final String sqlUpdate = "update Animaux set NomAnimal=?, Sexe=?, Couleur=?,Race=?,Espece=?, CodeClient=?, Tatouage=?, Antecedents=?, Archive=? where CodeAnimal=?";
 	private static final String sqlUpdateArchive = "update Animaux set Archive=? where CodeAnimal = ?";
+	private static final String sqlUpdateArchiveByClient = "update Animaux set Archive=? where CodeClient=? ";
 	private static final String sqlSelectByRace = "select CodeAnimal, NomAnimal, Sexe, Couleur, Race, Espece, CodeClient, Tatouage, Antecedents, Archive "
 			+ "from Animaux where Race like ? and Archive=0";
 	private static final String sqlSelectByEspece = "select CodeAnimal, NomAnimal, Sexe, Couleur, Race, Espece, CodeClient, Tatouage, Antecedents, Archive "
@@ -217,13 +218,7 @@ public class AnimalDAOJdbcImpl implements AnimalDAO{
 			rqt.setBoolean(9, data.isArchive());
 			rqt.setInt(10, data.getCodeAnimal());
 
-			int nbRows = rqt.executeUpdate();
-			if (nbRows == 1) {
-				ResultSet rs = rqt.getGeneratedKeys();
-				if (rs.next()) {
-					data.setCodeAnimal(rs.getInt(1));
-				}
-			}
+			rqt.executeUpdate();
 
 		} catch (SQLException e) {
 			throw new DALException("Update article failed - " + data, e);
@@ -241,8 +236,9 @@ public class AnimalDAOJdbcImpl implements AnimalDAO{
 
 		
 	}
+	
 	/**
-	 * Méthode qui update le champs "IsArchive" de Animal en bdd
+	 * Méthode qui met à jour le champ "Archive" de Animal en bdd
 	 */
 	@Override
 	public void updateIsArchive(Animal data) throws DALException {
@@ -261,11 +257,8 @@ public class AnimalDAOJdbcImpl implements AnimalDAO{
 				ResultSet rs = rqt.getGeneratedKeys();
 				if (rs.next()) {
 					data.setCodeAnimal(rs.getInt(1));
-					
 				}
 			}
-			System.out.println("uIA archivé ? => " + data.isArchive() );
-
 		} catch (SQLException e) {
 			throw new DALException("Archive failed ", e);
 		} finally {
@@ -277,12 +270,38 @@ public class AnimalDAOJdbcImpl implements AnimalDAO{
 				e.printStackTrace();
 			}
 			closeConnection();
-
 		}
-
-		
 	}
 
+	/**
+	 * Méthode qui met à jour le champ "Archive" de Animal en bdd
+	 * pour un client archivé
+	 */
+	@Override
+	public void updateIsArchiveByClient(Client data) throws DALException {
+		Connection cnx = null;
+		PreparedStatement rqt = null;
+		try {
+			cnx = getConnection();
+			rqt = cnx.prepareStatement(sqlUpdateArchiveByClient, Statement.RETURN_GENERATED_KEYS);
+			rqt.setBoolean(1, true);
+			rqt.setInt(2, data.getCodeClient());
+			rqt.executeUpdate();
+
+		} catch (SQLException e) {
+			throw new DALException("Archive Animaux failed ", e);
+		} finally {
+			try {
+				if (rqt != null) {
+					rqt.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			closeConnection();
+
+		}	
+	}
 
 	@Override
 	public List<Animal> selectByRace(String race) throws DALException {
@@ -427,6 +446,7 @@ public class AnimalDAOJdbcImpl implements AnimalDAO{
 		}
 		return liste;
 	}
+
 
 	
 }

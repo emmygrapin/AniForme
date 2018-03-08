@@ -43,7 +43,7 @@ public class TableAnimal extends JTable implements MouseListener {
 	}
 
 	/**
-	 * Accessible depuis l'instance TableModelPersonnel
+	 * Accessible depuis l'instance TableModelAnimal
 	 * @return
 	 */
 	public TableModelAnimal getTableModAnimal() {

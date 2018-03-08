@@ -60,6 +60,10 @@ public class AnimalManager {
 		daoAnimal.updateIsArchive(animal);
 	}
 	
+	public void updateIsArchiveByClient(Client client) throws DALException {
+		daoAnimal.updateIsArchiveByClient(client);
+	}
+	
 	public List<Animal> getEspeceByAnimal(Animal animal) throws DALException {
 		String espece = animal.getRace().getEspece();
 		return daoAnimal.selectByEspece(espece);

@@ -4,9 +4,8 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -21,7 +20,6 @@ import fr.eni.clinique.bo.Personnel;
 import fr.eni.clinique.dal.DALException;
 import fr.eni.clinique.ihm.login;
 import fr.eni.clinique.ihm.ecranAgenda.AgendaGestion;
-import fr.eni.clinique.ihm.ecranAnimal.AnimalGestion;
 import fr.eni.clinique.ihm.ecranClient.InfosClient;
 import fr.eni.clinique.ihm.ecranPersonnel.PersonnelGestion;
 //import fr.eni.clinique.ihm.ecranRDV.GestionRDV;
@@ -36,9 +34,8 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 	
 	private JDesktopPane desktopPane;
 	private JMenuBar menuBarre;
-	private JMenu menuPersonnel, menuClient, menuAnimaux, menuAgenda;
+	private JMenu menuPersonnel, menuClient, menuAgenda;
 	private PersonnelGestion ecranPersonnelGest;
-	private AnimalGestion ecranAnimalGest;
 	private Personnel personnelActif;
 	private AgendaGestion ecranAgendaGest;
 //	private GestionRDV ecranRDVGest;
@@ -49,6 +46,9 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 
 	private EcranPrincipalClinique() {
 
+		ImageIcon logo = new ImageIcon("images/ico_veto.png");
+		this.setIconImage(logo.getImage());
+		this.setTitle("Ani'Forme");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -68,10 +68,6 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 		desktopPane.add(getEcranInfosGestion());
 		//desktopPane.add(getEcranRDVGestion());
 		desktopPane.add(getEcranAgendaGestion());
-		
-
-		//desktopPane.add(getEcranAnimalGestion());
-
 
 	}
 
@@ -189,32 +185,7 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 				// TODO Auto-generated method stub
 				
 			}
-		});
-		
-
-		// Menu Gestion Animaux
-		menuAnimaux = new JMenu("Gestion d'Animaux");
-		menuBarre.add(menuAnimaux);
-		
-		menuAnimaux.addMenuListener(new MenuListener() {
-		    @Override
-		    public void menuSelected(MenuEvent e) {
-		    	//getEcranAnimalGestion().setVisible(true);
-		    }
-
-			@Override
-			public void menuCanceled(MenuEvent arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void menuDeselected(MenuEvent arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-		
+		});	
 	}
 	
 	public void refreshMenu ()

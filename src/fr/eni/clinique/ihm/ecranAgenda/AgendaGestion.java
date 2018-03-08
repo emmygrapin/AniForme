@@ -6,19 +6,19 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import java.util.Calendar;
 
 import org.jdatepicker.impl.DateComponentFormatter;
 import org.jdatepicker.impl.JDatePanelImpl;
@@ -28,10 +28,12 @@ import org.jdatepicker.impl.UtilDateModel;
 
 import fr.eni.clinique.bll.AgendaManager;
 import fr.eni.clinique.bll.PersonnelMger;
-import fr.eni.clinique.bll.RaceManager;
+import fr.eni.clinique.bo.Agenda;
+import fr.eni.clinique.bo.Animal;
+import fr.eni.clinique.bo.Client;
 import fr.eni.clinique.bo.Personnel;
-import fr.eni.clinique.bo.Race;
 import fr.eni.clinique.dal.DALException;
+import fr.eni.clinique.ihm.ecranDossMedical.DossierMedicalDialog;
 
 public class AgendaGestion extends JInternalFrame implements ActionListener{
 	private TableAgenda tableAgenda;
@@ -41,6 +43,9 @@ public class AgendaGestion extends JInternalFrame implements ActionListener{
 	private JPanel dateAgenda;
 	private UtilDateModel model;
 	private JDatePickerImpl datePicker;
+	private JButton btnDossierMedical;
+	private static JOptionPane alert;
+	private Agenda agenda;
 
 
 	public AgendaGestion(JFrame parent) {
@@ -74,7 +79,9 @@ public class AgendaGestion extends JInternalFrame implements ActionListener{
 		gbc.gridy = 1;
 		gbc.gridwidth =2;
 		panelGestionAgendas.add(new JScrollPane(getTableAgenda()), gbc);
-
+		gbc.gridy = 2;
+		panelGestionAgendas.add(getDossierMedical(), gbc);
+		
 		return panelGestionAgendas;
 
 	}
@@ -135,6 +142,30 @@ public class AgendaGestion extends JInternalFrame implements ActionListener{
 		return datePicker;
 	}
 	
+	private JButton getDossierMedical() {
+		if (this.btnDossierMedical == null) {
+			btnDossierMedical = new JButton("Dossier médical");
+			btnDossierMedical.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					
+					if (tableAgenda.getAnimalRdvSelect() != null) {
+						Animal animal = tableAgenda.getAnimalRdvSelect();
+						Client client = tableAgenda.getAnimalRdvSelect().getClient();
+						DossierMedicalDialog  dossierMedical = new DossierMedicalDialog(client, animal, AgendaGestion.this, tableAgenda);
+						
+					} else {
+						alert.showMessageDialog(null, "Veuillez sélectionner un animal pour voir son dossier médical", "Information",
+								JOptionPane.INFORMATION_MESSAGE);
+					}
+				}
+			});
+		
+		}
+		
+		return this.btnDossierMedical;
+	}
 	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
