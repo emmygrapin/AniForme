@@ -1,5 +1,6 @@
 package fr.eni.clinique.ihm.ecranAgenda;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
@@ -46,7 +47,9 @@ public class TableModelAgenda extends AbstractTableModel {
 		Object ret = null;
 		switch (columnIndex) {
 		case 0:
-			ret = listeAgendas.get(rowIndex).getDateRdv().getTime();
+			SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+			String laDateDuJour = sdf.format(listeAgendas.get(rowIndex).getDateRdv());
+			ret = laDateDuJour;
 			break;
 		case 1:
 			ret = listeAgendas.get(rowIndex).getAnimal().getClient().getNomClient();
@@ -65,9 +68,23 @@ public class TableModelAgenda extends AbstractTableModel {
 
 	// récupération de l'animal dans une ligne du tableau Agenda
 	public Animal selectAnimal(int rowIndex) {
-		Agenda rdv = listeAgendas.get(rowIndex);
-		Animal animal = rdv.getAnimal();
-		return animal;
+		if(listeAgendas.size() > 0)
+		{
+			System.out.println(rowIndex);
+			Agenda rdv = listeAgendas.get(rowIndex);
+			Animal animal = rdv.getAnimal();
+			return animal;
+		}
+		return null;
+	}
+	
+	public Agenda selectAgenda(int rowIndex) {
+		if(listeAgendas.size() > 0)
+		{
+			Agenda rdv = listeAgendas.get(rowIndex);
+			return rdv;
+		}
+		return null;
 	}
 
 	public String getColumnName(int column) {

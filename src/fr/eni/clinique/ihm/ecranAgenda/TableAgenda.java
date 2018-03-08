@@ -15,17 +15,18 @@ import fr.eni.clinique.bo.Personnel;
 import fr.eni.clinique.dal.DALException;
 
 public class TableAgenda extends JTable implements MouseListener {
+	
 	private Animal animalRdvSelect;
-
+	private Agenda RdvSelect;
+	
 	private TableModelAgenda tableModAgenda;
-	private Personnel personnel;
 
 
 	public TableAgenda(Personnel perso){
 		AgendaManager agendaManager = AgendaManager.getInstance();
 		List<Agenda> listeAgendas = new ArrayList<>();
 		try {
-			listeAgendas = agendaManager.getAgendasParVeto(perso.getCodePerso());
+			listeAgendas = agendaManager.getAgendasParVetoParDate(perso.getCodePerso(), new Date());
 		
 		tableModAgenda = new TableModelAgenda(listeAgendas);
 		tableModAgenda.getColumnName(0);
@@ -46,6 +47,7 @@ public class TableAgenda extends JTable implements MouseListener {
 	public void mouseClicked(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		animalRdvSelect = tableModAgenda.selectAnimal(getSelectedRow());
+		RdvSelect = tableModAgenda.selectAgenda(getSelectedRow());
 	}
 
 	@Override
@@ -80,16 +82,25 @@ public class TableAgenda extends JTable implements MouseListener {
 		return animalRdvSelect;
 	}
 
+	public Agenda getRdvSelect() {
+		return RdvSelect;
+	}
+
 	public void setAnimalRdvSelect(Animal animalRdvSelect) {
 		this.animalRdvSelect = animalRdvSelect;
 	}
 	
-	public void setPersonnel(Personnel personnel) {
-		this.personnel = personnel;
+	public void setInfos(Personnel personnel, Date date) {
+		
+		if(date == null)
+		{
+			date = new Date();
+		}
+		
 		List<Agenda> listeAgendas = new ArrayList<>();
 		AgendaManager agendaManager = AgendaManager.getInstance();
 		try {
-			listeAgendas = agendaManager.getAgendasParVeto(personnel.getCodePerso());
+			listeAgendas = agendaManager.getAgendasParVetoParDate(personnel.getCodePerso(), date);
 			tableModAgenda.setListeAgendas(listeAgendas);
 		} catch (DALException e) {
 			// TODO Auto-generated catch block
