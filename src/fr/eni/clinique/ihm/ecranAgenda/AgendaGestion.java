@@ -27,24 +27,27 @@ import org.jdatepicker.impl.UtilCalendarModel;
 import org.jdatepicker.impl.UtilDateModel;
 
 import fr.eni.clinique.bll.AgendaManager;
+import fr.eni.clinique.bll.LoginMger;
 import fr.eni.clinique.bll.PersonnelMger;
 import fr.eni.clinique.bll.RaceManager;
 import fr.eni.clinique.bo.Personnel;
 import fr.eni.clinique.bo.Race;
 import fr.eni.clinique.dal.DALException;
+import fr.eni.clinique.ihm.ecranPrincipal.EcranPrincipalClinique;
 
-public class AgendaGestion extends JInternalFrame implements ActionListener{
+public class AgendaGestion extends JInternalFrame implements ActionListener {
 	private TableAgenda tableAgenda;
 	private JPanel panelGestionAgendas;
 	private JComboBox choixVeterinaire;
 	private JFrame parent;
 	private JPanel dateAgenda;
 	private UtilDateModel model;
+	private Personnel personnelConnecte;
 
-
-	public AgendaGestion(JFrame parent) {
+	public AgendaGestion(JFrame parent, Personnel personnelActif) {
 		super("Agenda", true, true, true, true);
 		this.parent = parent;
+		this.personnelConnecte = personnelActif;
 		this.setSize(900, 800);
 		this.setContentPane(viewGestionAgendas());
 		// Cache l'application lorsque on clique sur la croix
@@ -66,52 +69,67 @@ public class AgendaGestion extends JInternalFrame implements ActionListener{
 		gbc.anchor = GridBagConstraints.LINE_START;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		panelGestionAgendas.add(getChoixVeterinaire(), gbc);
+		panelGestionAgendas.add(getChoixVeterinaire(personnelConnecte), gbc);
 		gbc.gridx = 1;
 		panelGestionAgendas.add(getDatePanel(), gbc);
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		gbc.gridwidth =2;
-		panelGestionAgendas.add(new JScrollPane(getTableAgenda()), gbc);
+		gbc.gridwidth = 2;
+		panelGestionAgendas.add(new JScrollPane(getTableAgenda(personnelConnecte)), gbc);
 
 		return panelGestionAgendas;
 
 	}
-	// Tableau de rdv pour un vétérinaire
-	public TableAgenda getTableAgenda() {
 
-	if (tableAgenda == null) {
-		Personnel premierVeterinaireListe = PersonnelMger.getInstance().getVeterinaires().get(0);
-		if (premierVeterinaireListe != null) {
-			tableAgenda = new TableAgenda(premierVeterinaireListe);
+	// Tableau de rdv pour un vétérinaire
+	public TableAgenda getTableAgenda(Personnel personnelConnecte) {
+		if (personnelConnecte != null) {
+			if (personnelConnecte.getRole() == "VET") {
+				tableAgenda = new TableAgenda(personnelConnecte);
+			} else {
+				if (tableAgenda == null) {
+					Personnel premierVeterinaireListe = PersonnelMger.getInstance().getVeterinaires().get(0);
+					if (premierVeterinaireListe != null) {
+						tableAgenda = new TableAgenda(premierVeterinaireListe);
+
+					}
+				}
+			}
+
 			tableAgenda.setFillsViewportHeight(true);
 			tableAgenda.setPreferredScrollableViewportSize(new Dimension(500, 200));
 		}
-		else {
-			
-		}
-	}
+
 		return tableAgenda;
 	}
+
 	// Permet de choisir le vétérinaire dont on veut afficher le planning
-	public JComboBox getChoixVeterinaire() {
+	public JComboBox getChoixVeterinaire(Personnel personnelConnecte) {
 		Vector<Personnel> veterinaires = new Vector<Personnel>();
 
-			List<Personnel> listeVeto = PersonnelMger.getInstance().getVeterinaires();
-
-			for (Personnel veto : listeVeto) {
-				veterinaires.add(veto);
+		List<Personnel> listeVeto = PersonnelMger.getInstance().getVeterinaires();
+		int indexCbx =0;
+		int i =0;
+		for (Personnel veto : listeVeto) {
+			veterinaires.add(veto);
+			if(veto.getNom().equals(personnelConnecte.getNom())){
+				indexCbx= i;
 			}
-
+			i++;
+		}
+		
 		if (this.choixVeterinaire == null) {
 			this.choixVeterinaire = new JComboBox(veterinaires);
+			if (personnelConnecte.getRole() == "VET" || personnelConnecte.getRole() == "ADM") {	
+				choixVeterinaire.setSelectedIndex(indexCbx);
+			} 
 			choixVeterinaire.addActionListener(this);
 		}
-
+		
 		return this.choixVeterinaire;
 
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -128,16 +146,15 @@ public class AgendaGestion extends JInternalFrame implements ActionListener{
 		JDatePanelImpl dateAgenda = new JDatePanelImpl(model, p);
 
 		JDatePickerImpl datePicker = new JDatePickerImpl(dateAgenda, new DateComponentFormatter());
-		
+
 		return datePicker;
 	}
-	
-	
+
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
-		 Personnel veterinaire = (Personnel) choixVeterinaire.getSelectedItem();
+		Personnel veterinaire = (Personnel) choixVeterinaire.getSelectedItem();
 		tableAgenda.setPersonnel(veterinaire);
-	
+
 	}
 }

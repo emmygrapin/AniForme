@@ -24,7 +24,7 @@ public class PersonnelDAOJdbcImpl implements PersonnelDAO {
 	private static final String sqlSelectAll = "select CodePers, Nom, MotPasse, Role, Archive"
 			+ " from Personnels where Archive = 0";
 	private static final String sqlSelectVeto = "select CodePers, Nom, MotPasse, Role, Archive"
-			+ " from Personnels where Archive = 0 and Role = 'VET'";
+			+ " from Personnels where Archive = 0 and ( Role = 'VET' or Role = 'ADM') ";
 	private static final String sqlInsert = "insert into Personnels(Nom, MotPasse, Role, Archive) values(?,?,?,?)";
 	private static final String sqlDelete = "delete from client where CodePers = ?";
 	private static final String sqlUpdateMdp = "update Personnels set MotPasse=? where CodePers =?";
