@@ -64,6 +64,13 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 		setJMenuBar(getMenuBarre());
 		
 		//(écran enfant) faire pour tous les écrans
+	
+		//desktopPane.add(getEcranAnimalGestion());
+
+
+	}
+	
+	public void chargerpages(){
 		desktopPane.add(getEcranPersonnelGestion());		
 		desktopPane.add(getEcranInfosGestion());
 		//desktopPane.add(getEcranRDVGestion());
@@ -91,15 +98,16 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 			public void run() {
 				
 			EcranPrincipalClinique ecran;
-				ecran = EcranPrincipalClinique.getInstance();
+			ecran = EcranPrincipalClinique.getInstance();
 //			
 //				//TODO dialog authentification
 				login loginEcran = new login(ecran);
 //				
-				if(ecran.personnelActif != null)
+			if(ecran.personnelActif != null)
 			{
+				ecran.chargerpages();
 				ecran.setVisible(true);
-		}
+			}
 				
 	}
 			
@@ -279,7 +287,7 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 		
 	public AgendaGestion getEcranAgendaGestion(){
 		if(ecranAgendaGest ==  null){
-		ecranAgendaGest = new AgendaGestion(this);
+		ecranAgendaGest = new AgendaGestion(this, this.getPersonnelActif());
 		}
 		return ecranAgendaGest;
 	}
@@ -317,6 +325,11 @@ public class EcranPrincipalClinique extends JFrame implements ActionListener {
 	public void setPersonnelActif(Personnel personnel)
 	{
 		personnelActif = personnel;	
+	}
+
+
+	public Personnel getPersonnelActif() {
+		return personnelActif;
 	}
 	
 	
