@@ -43,6 +43,7 @@ public class AgendaGestion extends JInternalFrame implements ActionListener {
 	private JPanel dateAgenda;
 	private UtilDateModel model;
 	private Personnel personnelConnecte;
+	private JDatePickerImpl datePicker;
 
 	public AgendaGestion(JFrame parent, Personnel personnelActif) {
 		super("Agenda", true, true, true, true);
@@ -144,17 +145,38 @@ public class AgendaGestion extends JInternalFrame implements ActionListener {
 		p.put("text.year", "Year");
 
 		JDatePanelImpl dateAgenda = new JDatePanelImpl(model, p);
-
 		JDatePickerImpl datePicker = new JDatePickerImpl(dateAgenda, new DateComponentFormatter());
-
+		datePicker = new JDatePickerImpl(dateAgenda, new DateComponentFormatter());
+		
+		datePicker.addActionListener(this);
+		
 		return datePicker;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
+
 		// TODO Auto-generated method stub
+		//	Personnel veterinaire = (Personnel) choixVeterinaire.getSelectedItem();
+	
+
+
+		
+		//Traitement de la date
+		
+		int years = datePicker.getModel().getYear();
+		int days = datePicker.getModel().getDay();
+		int mounth = datePicker.getModel().getMonth();
+		
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(0);
+		cal.setTimeZone(new java.util.SimpleTimeZone(0, "TS"));
+		cal.set(years, mounth, days);
+		Date date = cal.getTime();
+
 		Personnel veterinaire = (Personnel) choixVeterinaire.getSelectedItem();
 		tableAgenda.setPersonnel(veterinaire);
-
+		tableAgenda.setInfos(veterinaire, date);
+	
 	}
 }

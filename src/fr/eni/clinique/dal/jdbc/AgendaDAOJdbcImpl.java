@@ -5,9 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
+import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -24,7 +26,7 @@ public class AgendaDAOJdbcImpl implements AgendaDAO {
 			+ "from Agendas where CodeVeto = ?";
 
 	private static final String sqlSelectByVeterinaireByDate = "select CodeAnimal, DateRdv, CodeVeto "
-			+ "from Agendas where CodeVeto = ? and Date = ?";
+			+ "from Agendas where CodeVeto = ? and DateRdv > ? and DateRdv < ?";
 
 	private static final String sqlInsert = "insert into Agendas (CodeVeto, DateRdv, CodeAnimal) values(?,?,?)";
 	private static final String sqlDelete = "delete from Agendas where CodeVeto = ? and CodeAnimal = ? and DateRdv = ? ";
@@ -71,7 +73,9 @@ public class AgendaDAOJdbcImpl implements AgendaDAO {
 			rqt.setInt(1, codeVeto);
 			rs = rqt.executeQuery();
 			while (rs.next()) {
-				agenda = new Agenda(personnelDAO.selectById(rs.getInt("CodeVeto")), rs.getTimestamp("DateRdv"),
+				Timestamp stamp = new Timestamp(rs.getTimestamp("DateRdv").getTime());
+				Date date = new Date(stamp.getTime());
+				agenda = new Agenda(personnelDAO.selectById(rs.getInt("CodeVeto")), date,
 						animalDAO.selectById(rs.getInt("CodeAnimal")));
 				agendas.add(agenda);
 			}
@@ -107,9 +111,23 @@ public class AgendaDAOJdbcImpl implements AgendaDAO {
 			cnx = getConnection();
 			rqt = cnx.prepareStatement(sqlSelectByVeterinaireByDate);
 			rqt.setInt(1, codeVeto);
-			SimpleDateFormat date = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+			
+			
+			SimpleDateFormat date = new SimpleDateFormat("yyyy-dd-MM");
 			String newDate = date.format(dateRdv);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-dd-MM");
+			Calendar c = Calendar.getInstance();
+			try {
+				c.setTime(sdf.parse(newDate));
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			c.add(Calendar.DATE, 1);
+			String newDate2 = sdf.format(c.getTime());  
+			
 			rqt.setString(2, newDate);
+			rqt.setString(3, newDate2);
 			rs = rqt.executeQuery();
 			Agenda agenda = null;
 			while (rs.next()) {
@@ -142,7 +160,7 @@ public class AgendaDAOJdbcImpl implements AgendaDAO {
 			cnx = getConnection();
 			rqt = cnx.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS);
 			rqt.setInt(1, data.getPersonnel().getCodePerso());
-			SimpleDateFormat date = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+			SimpleDateFormat date = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss");
 			String newDate = date.format(data.getDateRdv());
 			rqt.setString(2,newDate);
 			rqt.setInt(3, data.getAnimal().getCodeAnimal());
@@ -176,10 +194,11 @@ public class AgendaDAOJdbcImpl implements AgendaDAO {
 
 			rqt = cnx.prepareStatement(sqlDelete);
 			rqt.setInt(1, codeVeto);
-			SimpleDateFormat date = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+			SimpleDateFormat date = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss");
 			String newDate = date.format(data.getDateRdv());
-			rqt.setString(2, newDate);
-			rqt.setInt(3, codeAnimal);
+			rqt.setInt(2, codeAnimal);
+			rqt.setString(3, newDate);
+			System.out.println(newDate);
 			rqt.executeUpdate();
 		} catch (SQLException e) {
 			throw new DALException("Delete rdv failed - id=" + codeVeto + "pour l'animal" +codeAnimal, e);
